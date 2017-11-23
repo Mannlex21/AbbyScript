@@ -1,0 +1,52 @@
+2016-11-10 18:10:57 ERROR  : ERROR:  cannot drop table alumnos because other objects depend on it
+DETAIL:  constraint detalle_calificaciones_alumnos on table calificaciones depends on table alumnos
+constraint detalle_grupo_alumnos on table detalle_grupo depends on table alumnos
+constraint detalle_tarea_alumnos on table detalle_tarea depends on table alumnos
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2016-11-10 18:11:16 ERROR  : ERROR:  database "gpsproyecto" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+2016-11-10 18:11:43 ERROR  : ERROR:  database "gpsproyecto" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+2016-11-10 18:12:53 ERROR  : ERROR:  database "gpsproyecto" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+2016-11-15 11:53:14 ERROR  : ERROR:  database "gpsproyecto" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+2016-11-15 11:56:55 ERROR  : ERROR:  database "gpsproyecto" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+2016-11-25 07:28:36 ERROR  : ERROR:  INSERT has more target columns than expressions
+LINE 2: ...ula, pelicula, genero, fecha, nacionalidad, precio, rentada)
+                                                               ^
+2016-11-25 07:30:37 ERROR  : ERROR:  date/time field value out of range: "17/09/2014"
+LINE 3:     VALUES ('Avengers', 'Ciencia Ficcion', '17/09/2014', 'US...
+                                                   ^
+HINT:  Perhaps you need a different "datestyle" setting.
+2016-11-25 07:31:27 ERROR  : ERROR:  syntax error at or near "17"
+LINE 1: 17/
+        ^
+2016-11-25 07:31:45 ERROR  : ERROR:  column "fecha" is of type date but expression is of type integer
+LINE 3:     VALUES ('Avengers', 'Ciencia Ficcion', 17/09/2014, 'USA'...
+                                                   ^
+HINT:  You will need to rewrite or cast the expression.
+2016-11-25 07:31:54 ERROR  : ERROR:  date/time field value out of range: "17/09/2014"
+LINE 3:     VALUES ('Avengers', 'Ciencia Ficcion', '17/09/2014', 'US...
+                                                   ^
+HINT:  Perhaps you need a different "datestyle" setting.
+2016-11-25 07:33:16 ERROR  : ERROR:  syntax error at or near "false"
+LINE 1: false
+        ^
+2016-11-27 15:29:41 ERROR  : ERROR:  cannot drop table usuarios because other objects depend on it
+DETAIL:  constraint alumnos_usuarios on table alumnos depends on table usuarios
+constraint maestros_usuarios on table maestros depends on table usuarios
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2016-11-27 17:56:12 ERROR  : ERROR:  cannot drop table temas because other objects depend on it
+DETAIL:  constraint forosmsj_temas on table forosmsj depends on table temas
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2016-11-27 17:56:28 ERROR  : ERROR:  cannot drop table foros because other objects depend on it
+DETAIL:  constraint temas_foros on table temas depends on table foros
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+2016-12-10 18:57:30 ERROR  : ERROR:  cannot truncate a table referenced in a foreign key constraint
+DETAIL:  Table "salesline" references "sale".
+HINT:  Truncate table "salesline" at the same time, or use TRUNCATE ... CASCADE.
+2016-12-10 18:57:56 ERROR  : ERROR:  cannot truncate a table referenced in a foreign key constraint
+DETAIL:  Table "salesline" references "product".
+HINT:  Truncate table "salesline" at the same time, or use TRUNCATE ... CASCADE.
