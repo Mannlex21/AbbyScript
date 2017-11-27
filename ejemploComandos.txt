@@ -1,0 +1,7 @@
+docCreateElem("input").setHTML("Class","clase")
+docCreateElem("input").setHTML("Class","clase")
+docCreateElem("button").setHTML("Class","clase")
+docCreateElem("div").setHTML("Class","clase")
+docCreateElem("p").setHTML("Class","clase")
+CONSOL("Text")
+docCreateElem("").setHTML("","")

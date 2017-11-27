@@ -1,3 +1,23 @@
+<<<<<<< HEAD
 MAIN INDEX{
 HTML{VAR X=1;};
 };
+=======
+MAIN index {
+	HTML {
+		VAR x = 1;
+		VAR y = 2;
+		VAR e = x;
+			docCreateElem("p").setHTML("Class","clase")
+			
+
+	}
+	JS index {
+		nombre()
+	}
+	CSS(".clase",[
+		"background":"red",
+		"color":"white"
+	])
+}
+>>>>>>> b46bc0a0ee80f76733bb014a2c46193f397fd5f3
