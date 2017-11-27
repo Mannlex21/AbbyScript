@@ -29,3 +29,6 @@ nbdist/
 *.properties
 fichero.txt
 private.xml 
+*.properties
+*.properties
+nbproject/.DS_Store

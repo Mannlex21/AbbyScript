@@ -63,10 +63,10 @@ terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
             BREAK,MAPX,FORMATTER,DATE,NULL,NEW,TRUE,PARENTESIS_A,PARENTESIS_C,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C,
             GUIONBAJO,PUNTOCOMA,DOSPUNTOS,PUNTO,AND,ANDSIMPLE,OR,ORSIMPLE,NOT,XOR,MAYORQUE,MAYORIGUAL,MENORQUE,MENORIGUAL,IGUAL,IGUAL2,
             DIFERENTE,SUMA,RESTA,MULTIPLICACION,DIVISION,ASIGNACION,ASIGNACIONINCRE,ASIGNACIONDECRE,ASIGNACIONMULT,ASIGNACIONDIV,OPERDECREMENTO,
-            OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID, docGetElemTag,
+            OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID,docGetElemClass, docGetElemTag,
             docCreateElemTag, docCreateElem, docOn, Remove, JQElem, CONSOL, Child, ChildText, RChild, beforeChild, Value, Val, makeTable, setHTML,
             HG, WD, inHTML,outHTML, css, getBody, getDate, getDay,getYear, getHour, getMSecond, getMinute, getMonth, getSecond, div, hvr, AClass, RClass,
-            COMILLA_SIMPLE, INVNUMERO, TABLE, TR, BUTTON,INPUT
+            COMILLA_SIMPLE, INVNUMERO, TABLE, TR, optSelect, LIST
             ;
 
 /*terminal String ID,STRING;
@@ -80,8 +80,8 @@ accederMetodos, sentenciaWhile, arrayString, hacerTabla, hover, grupo0, grupo1,
 grupo2, grupo2_2, animCondicion2, param0, param1, param2, sentenciasInterior, sentenciaHTML, sentenciaCSS, 
 condicionCSS, idnumero,NUMID,NUMIDSTR,docReady,NI, condicionCSS2, parametros2,
 sentenciaMain2,sentenciaMain3,sentenciaMain4,sentenciaMain5,
-sentenciaHTML2,sentenciaHTML3,sentenciaHTML4, primeraSentencia, cadena, tabla, cuerpoTabla, boton, input, consola, jqElemento, textoHijo,
-crearElemento,agregarHtml,llamarFuncion;
+sentenciaHTML2,sentenciaHTML3,sentenciaHTML4, primeraSentencia, cadena, tabla, cuerpoTabla, boton, input, consola, obtenerElemento,
+crearElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista;
 
 precedence right LLAVE_A, LLAVE_C;
 precedence right CORCHETE_A, CORCHETE_C;
@@ -207,16 +207,15 @@ cuerpo ::=   sentenciaFor
             | cuerpo tabla
             | consola
             | cuerpo consola
-            | jqElemento
-            | cuerpo jqElemento
+            | obtenerElemento
+            | cuerpo obtenerElemento
             | crearElemento
             | cuerpo crearElemento
             | llamarFuncion
             | cuerpo llamarFuncion
-            /*| boton
-            | boton cuerpo
-            | input
-            | input cuerpo
+            | lista
+            | cuerpo lista
+            /*
             | accederMetodos
             | accederMetodos cuerpo*/
 
@@ -224,18 +223,25 @@ cuerpo ::=   sentenciaFor
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C;
-jqElemento::= JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO textoHijo;
-textoHijo::= ChildText PARENTESIS_A STRING PARENTESIS_C;
+obtenerElemento::= docGetElemID PARENTESIS_A STRING PARENTESIS_C PUNTO funciones 
+                   | docGetElemClass PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
+crearElemento::= docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
 
-crearElemento::= docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO agregarHtml;
-agregarHtml::= setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C;
-
+funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C 
+            | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
+            | funciones4 PARENTESIS_A PARENTESIS_C 
+;
+funciones2::= setHTML | optSelect;
+funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove;
+funciones4::=inHTML;
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A PARENTESIS_C
 ;
-tabla::= TABLE PARENTESIS_A PARENTESIS_C PUNTOCOMA
+lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C;
+
+tabla::= TABLE PARENTESIS_A PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C
-        COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C PARENTESIS_C PUNTOCOMA;
+        COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C PARENTESIS_C;
 cuerpoTabla::= STRING | STRING COMA cuerpoTabla;
 
 /*--------------------------------------------------------------*/

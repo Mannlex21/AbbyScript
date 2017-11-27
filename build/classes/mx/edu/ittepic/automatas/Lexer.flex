@@ -129,26 +129,29 @@ WHITE=[" "|\t\r\n]
 "WHILE" {return token(sym.WHILE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"WHILE");}
 "TABLE" {return token(sym.TABLE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TABLE");}
 "TR" {return token(sym.TR, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TR");}
-"BUTTON" {return token(sym.BUTTON, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"BUTTON");}
-"INPUT" {return token(sym.INPUT, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"INPUT");}
+"LIST" {return token(sym.LIST, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"LIST");}
 
-
-
-"fileName"    {return token(sym.fileName, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"fileName");}
+"optSelect" {return token(sym.optSelect, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"optSelect");}
+"AClass"     {return token(sym.AClass, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"AClass");}
+"RClass"     {return token(sym.RClass, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"RClass");}
 "getAtt"     {return token(sym.getAtt, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"getAtt");}
-"JQDocReady"     {return token(sym.JQDocReady, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"JQDocReady");}
-"docGetElemID"     {return token(sym.docGetElemID, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docGetElemID");}
-"docGetElemTag"     {return token(sym.docGetElemTag, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docGetElemTag");}
-"docCreateElemTag"     {return token(sym.docCreateElemTag, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docCreateElemTag");}
 "docCreateElem"     {return token(sym.docCreateElem, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docCreateElem");}
-"docOn"     {return token(sym.docOn, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docOn");}
-"Remove"     {return token(sym.Remove, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Remove");}
-"JQElem"     {return token(sym.JQElem, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"JQElem");}
+"docGetElemID"     {return token(sym.docGetElemID, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docGetElemID");}
+"docGetElemClass"     {return token(sym.docGetElemClass, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docGetElemClass");}
 "CONSOL"     {return token(sym.CONSOL, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"CONSOL");}
 "Child"     {return token(sym.Child, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Child");}
 "ChildText"     {return token(sym.ChildText, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"ChildText");}
 "RChild"     {return token(sym.RChild, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"RChild");}
 "beforeChild"     {return token(sym.beforeChild, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"beforeChild");}
+
+
+"JQElem"     {return token(sym.JQElem, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"JQElem");}
+"fileName"    {return token(sym.fileName, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"fileName");}
+"JQDocReady"     {return token(sym.JQDocReady, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"JQDocReady");}
+"docGetElemTag"     {return token(sym.docGetElemTag, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docGetElemTag");}
+"docCreateElemTag"     {return token(sym.docCreateElemTag, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docCreateElemTag");}
+"docOn"     {return token(sym.docOn, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"docOn");}
+"Remove"     {return token(sym.Remove, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Remove");}
 "Value"     {return token(sym.Value, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Value");}
 "Val"     {return token(sym.Val, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Val");}
 "makeTable"     {return token(sym.makeTable, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"makeTable");}
@@ -168,8 +171,7 @@ WHITE=[" "|\t\r\n]
 "getSecond"     {return token(sym.getSecond, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"getSecond");}
 "div"     {return token(sym.div, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"div");}
 "hvr"     {return token(sym.hvr, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"hvr");}
-"AClass"     {return token(sym.AClass, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"AClass");}
-"RClass"     {return token(sym.RClass, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"RClass");}
+
 "PrintCon"     {return token(sym.PrintCon, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"PrintCon");}
 
 

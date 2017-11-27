@@ -1,23 +1,25 @@
-<<<<<<< HEAD
-MAIN INDEX{
-HTML{VAR X=1;};
-};
-=======
 MAIN index {
 	HTML {
 		VAR x = 1;
 		VAR y = 2;
 		VAR e = x;
+		FOR(VAR i =0;i<10;i++){
 			docCreateElem("p").setHTML("Class","clase")
-			
-
+			docGetElemID("").Child("")
+			TABLE("",{TR{"Header1","Header2","Header3"}},
+				{TR{"Cuerpo1","Cuerpo2","Cuerpo3"}},
+				{TR{"Footer1","Footee2","Footer3"}})
+			LIST("",[""]
+		}
 	}
 	JS index {
 		nombre()
+		FUNCTION nombre(){
+			CONSOL("ENTRO")
+		}
 	}
 	CSS(".clase",[
 		"background":"red",
 		"color":"white"
 	])
 }
->>>>>>> b46bc0a0ee80f76733bb014a2c46193f397fd5f3
