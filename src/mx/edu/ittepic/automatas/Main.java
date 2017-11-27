@@ -30,6 +30,19 @@ public class Main {
         boolean RedirigidoCup = redirigir("Cup.java");
         boolean RedirigidoSym= redirigir("sym.java");
         if(RedirigidoCup && RedirigidoSym){
+            /*String filePath = new File("").getAbsolutePath(); 
+            String cupErrores = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
+        +File.separator+"automatas"+File.separator+"CupErrores.cup";
+        generarCupErrores(cupErrores);*/
+            System.exit(0);
+        }else System.err.println("Falló generar Cup");
+     }
+    public static void generarCupErrores(String cup) throws IOException, Exception{        
+        String[] archivoCup={"-parser","CupErrores",cup};
+        java_cup.Main.main(archivoCup);
+        boolean RedirigidoCup = redirigir("CupErrores.java");
+        boolean RedirigidoSym= redirigir("sym.java");
+        if(RedirigidoCup && RedirigidoSym){
             System.exit(0);
         }else System.err.println("Falló generar Cup");
      }
@@ -56,9 +69,11 @@ public class Main {
         +File.separator+"automatas"+File.separator+"Lexer.flex";
         String cup = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
         +File.separator+"automatas"+File.separator+"Cup.cup";
+        
         System.out.print(cup);
         generarLexer(lexer); 
         generarCup(cup);
+        
     }
 }
 

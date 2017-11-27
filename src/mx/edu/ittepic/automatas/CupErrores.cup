@@ -1,0 +1,104 @@
+package mx.edu.ittepic.automatas;
+import java_cup.runtime.*;
+import java.io.FileReader;
+import java.util.*;
+
+
+parser code {:
+    boolean esId;
+    String tipoActual;
+    String salidaTipoActual;
+    Object valorActual;
+    String valorActualTipo;
+    String fil,col;
+    ArrayList<Error1> ManejadorDeErrores;
+    boolean esDAssig=false;
+    int fl;
+
+    public CupErrores(java_cup.runtime.Scanner s,ArrayList<Error1> m,int tfl) {
+        super(s); 
+        ManejadorDeErrores =m; 
+        fl = tfl;
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        report_error("No se encontró ;",s);
+
+    }
+
+    public void syntax_error(Symbol s){
+        //report_error("Sintactico",s);
+    }
+
+    public void report_error(String message, Object info){
+        if(info!=null){
+            java_cup.runtime.Symbol s =(java_cup.runtime.Symbol)info;
+            String valor="";
+            if(s.value!=null){
+                valor = s.value.toString();
+            }
+        ManejadorDeErrores.add(new Error1(message,s.left,s.right,valor));
+        }else{
+            ManejadorDeErrores.add(new Error1(message,-1,-1,"?????"));
+        }
+    }
+    /*public static void main(String[] args){
+        try {
+                Cup sintactico = new Cup(new Lexer(new FileReader(args[0])));
+            try{
+                Object result = sintactico.parse().value;
+            }catch(Exception ex){
+
+
+            }
+            System.out.println("\n*** Resultados finales ***");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }*/
+:};
+
+//DECLARACION DE TERMINALES
+terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
+            CSS, HTML, VAR, MAIN,FUNCTION,IF,FOR,OBJECT,ARRAY,DECLARE,JS,CREATE,PAGE,FALSE,THIS,RETURN,ELSE,CATCH,TRY,
+            BREAK,MAPX,FORMATTER,DATE,NULL,NEW,TRUE,PARENTESIS_A,PARENTESIS_C,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C,
+            GUIONBAJO,PUNTOCOMA,DOSPUNTOS,PUNTO,AND,ANDSIMPLE,OR,ORSIMPLE,NOT,XOR,MAYORQUE,MAYORIGUAL,MENORQUE,MENORIGUAL,IGUAL,IGUAL2,
+            DIFERENTE,SUMA,RESTA,MULTIPLICACION,DIVISION,ASIGNACION,ASIGNACIONINCRE,ASIGNACIONDECRE,ASIGNACIONMULT,ASIGNACIONDIV,OPERDECREMENTO,
+            OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID, docGetElemTag,
+            docCreateElemTag, docCreateElem, docOn, Remove, JQElem, CONSOL, Child, ChildText, RChild, beforeChild, Value, Val, makeTable, setHTML,
+            HG, WD, inHTML,outHTML, css, getBody, getDate, getDay,getYear, getHour, getMSecond, getMinute, getMonth, getSecond, div, hvr, AClass, RClass,
+            COMILLA_SIMPLE, INVNUMERO, TABLE, TR, BUTTON,INPUT
+            ;
+
+/*terminal String ID,STRING;
+terminal Integer NUMERO;*/
+
+//DECLACACION DE NO TERMINALES
+non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, sentenciaPackage, 
+listaArray,sif, condicion, comparador, cuerpo, compuerta, funcion, parametros, sentenciaJS,
+condicionFor, sentenciaFor, expFor1,expFor2,expFor3, sentencia, trycatch, 
+accederMetodos, sentenciaWhile, arrayString, hacerTabla, hover, grupo0, grupo1, grupo1_2, grupo1_3,
+grupo2, grupo2_2, animCondicion2, param0, param1, param2, sentenciasInterior, sentenciaHTML, sentenciaCSS, condicionCSS, idnumero,grupos1,NUMID,NUMIDSTR,NUMSTR, docReady,grupos2,grupos3,grupos4,NI, condicionCSS2, parametros2,
+sentenciaMain2,sentenciaMain3,sentenciaMain4,sentenciaMain5,
+sentenciaHTML2,sentenciaHTML3,sentenciaHTML4, primeraSentencia, cadena, tabla, cuerpoTabla, boton, input;
+
+precedence right LLAVE_A, LLAVE_C,PUNTOCOMA;
+precedence right CORCHETE_A, CORCHETE_C,PUNTOCOMA;
+precedence right ID;
+
+
+
+
+
+start with inicio;
+
+///////////////////////////////INICIO///////////////////////////////////
+
+/*inicio ::= NUMERO {: System.out.println("Numero");:} | ID {: System.out.println("ID");:} | NUMERO ID {: System.out.println("NUMERO ID");:} 
+           | ID NUMERO {: System.out.println("ID NUMERO");:} |error {: System.out.println("ERROR");:} ;*/
+
+inicio ::= DOSPUNTOS:e
+{:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"CUPError sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'ID'."));:}
+            | error
+;
+
+

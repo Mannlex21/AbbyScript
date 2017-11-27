@@ -126,8 +126,11 @@ WHITE=[" "|\t\r\n]
 "FORMATTER"     {return token(sym.FORMATTER, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"FORMATTER");}
 "DATE"     {return token(sym.DATE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"DATE");}
 "IN"     {return token(sym.EN, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"EN");}
-"SCRIPT"     {return token(sym.SCRIPT, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"SCRIPT");}
 "WHILE" {return token(sym.WHILE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"WHILE");}
+"TABLE" {return token(sym.TABLE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TABLE");}
+"TR" {return token(sym.TR, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TR");}
+"BUTTON" {return token(sym.BUTTON, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"BUTTON");}
+"INPUT" {return token(sym.INPUT, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"INPUT");}
 
 
 
@@ -152,7 +155,6 @@ WHITE=[" "|\t\r\n]
 "setHTML"     {return token(sym.setHTML, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"setHTML");}
 "HG"     {return token(sym.HG, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"HG");}
 "WD"     {return token(sym.WD, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"WD");}
-"Animate"     {return token(sym.Animate, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Animate");}
 "inHTML"     {return token(sym.inHTML, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"inHTML");}
 "outHTML"     {return token(sym.outHTML, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"outHTML");}
 "css"     {return token(sym.css, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"css");}

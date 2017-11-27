@@ -1,20 +1,17 @@
 MAIN index {
 	HTML {
-		TABLE("",,,);
-	};
-	JS index {
-		nombre();
-		FUNCTION nombre(){
-			JQElem(".clase").ChildText("lista");
-			CONSOL("ENTRO");
-		};
-	};
-	SCRIPT readme{
+		VAR x = 1;
+		VAR y = 2;
+		VAR e = x;
+			docCreateElem("p").setHTML("Class","clase")
+			
 
-	};
-<!-- asd -->
+	}
+	JS index {
+		nombre()
+	}
 	CSS(".clase",[
 		"background":"red",
 		"color":"white"
-	]);
-};
+	])
+}

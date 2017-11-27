@@ -216,6 +216,7 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
         Reader reader = new BufferedReader(new FileReader(filePath+""+File.separator+"fichero.txt"));
         analizarCodigo(reader);
         sintactico();
+        //erroresCup();
         String log="";
         System.out.println("Tamaño manejador errores: " + manejadorErrores.size());
         if (manejadorErrores.size() == 0) {
@@ -297,6 +298,24 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
             appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
     }
+    /*public void erroresCup() {
+        String codigo = textPane.getText();
+        Lexer flex = new Lexer(new StringReader(codigo));
+        CupErrores parser;
+        ArrayList<Error1> m = new ArrayList<Error1>();
+        parser = new CupErrores(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
+        try {
+            parser.parse();
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (!parser.ManejadorDeErrores.isEmpty()) {
+            manejadorErrores.addAll(parser.ManejadorDeErrores);
+            parser.ManejadorDeErrores.clear();
+        }else{
+            appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+        }
+    }*/
     //AQUI AGREGA AL PANEL EL TEXTO EN COLOR
     private void appendToPane(JTextPane tp, String msg, Color c)
     {
