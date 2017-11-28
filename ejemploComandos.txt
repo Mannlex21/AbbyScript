@@ -12,7 +12,7 @@ CONSOL("Text")
 docGetElemClass("")
 docGetElemID("")
 docCreateElem("")
-TABLE("".{TR{"Header1","Header2","Header3"}},{TR{"Cuerpo1","Cuerpo2","Cuerpo3"}},{TR{"Footer1","Footee2","Footer3"}})
+TABLE("",[""],[""],["",""])
 LIST("",["","",""...])
 --Clases--
 .setHTML("name","FORM")

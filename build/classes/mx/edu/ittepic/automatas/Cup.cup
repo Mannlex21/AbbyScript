@@ -76,11 +76,12 @@ terminal Integer NUMERO;*/
 non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
             sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
             condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,  consola,
-            obtenerElemento,crearElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista;
+            obtenerElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos;
 
+precedence right PARENTESIS_A, PARENTESIS_C;
 precedence right LLAVE_A, LLAVE_C;
 precedence right CORCHETE_A, CORCHETE_C;
-precedence right ID;
+precedence right ID,STRING;
 
 
 
@@ -203,18 +204,44 @@ cuerpo ::=   sentenciaFor
             | cuerpo consola
             | obtenerElemento
             | cuerpo obtenerElemento
-            | crearElemento
-            | cuerpo crearElemento
             | llamarFuncion
             | cuerpo llamarFuncion
             | lista
             | cuerpo lista
 ;
 /*--------------------------------------------------------------*/
-consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C;
-obtenerElemento::= docGetElemID PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
-                   | docGetElemClass PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
-crearElemento::= docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
+consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
+            | CONSOL error:e NUMIDSTR PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
+            | CONSOL PARENTESIS_A error:e PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un NUMERO, STRING o ID."));:}
+            | CONSOL PARENTESIS_A NUMIDSTR error:e
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+;
+obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones                    
+                    | elementos PARENTESIS_A STRING PARENTESIS_C
+                    | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
+                    | elementos error:e STRING PARENTESIS_C PUNTO funciones
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+                    | elementos PARENTESIS_A error:e PARENTESIS_C PUNTO funciones
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+                    | elementos PARENTESIS_A STRING error:e PUNTO funciones
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+                    | elementos PARENTESIS_A STRING PARENTESIS_C error:e funciones
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
+                    | elementos PARENTESIS_A STRING PARENTESIS_C PUNTO error:e
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
+
+                    | elementos error:e STRING PARENTESIS_C
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+                    | elementos PARENTESIS_A error:e PARENTESIS_C
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+                    | elementos PARENTESIS_A STRING error:e
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+;
+elementos::= docGetElemID | docGetElemClass | docCreateElem;
+
 
 funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
             | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
@@ -248,6 +275,7 @@ funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
             | funciones4 PARENTESIS_A error:e
                             {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+            
 ;
 funciones2::= setHTML | optSelect;
 funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove
@@ -256,14 +284,73 @@ funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClas
 funciones4::=inHTML;
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A PARENTESIS_C
+                    
+                    | ID error:e parametros PARENTESIS_C
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+                    | ID PARENTESIS_A error:e PARENTESIS_C
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ID."));:}
+                    | ID PARENTESIS_A parametros error:e
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
-lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C;
+lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+            | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+            | LIST PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+            | LIST PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '['."));:}
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Estructura de lista incorrecta."));:}
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ']'."));:}
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+;
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C
-        COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C COMA LLAVE_A TR LLAVE_A cuerpoTabla LLAVE_C LLAVE_C PARENTESIS_C;
-cuerpoTabla::= STRING | STRING COMA cuerpoTabla;
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        
+        |TABLE error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+        |TABLE PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+        |TABLE PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+        |TABLE PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '['."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Estructura de tabla incorrecta."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ']'."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '['."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Estructura de tabla incorrecta."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ']'."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '['."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Estructura de tabla incorrecta."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ']'."));:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
+            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 
+;
+cuerpoTabla::= STRING | STRING COMA cuerpoTabla 
+                | error:e
+                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+                | STRING error:e
+                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+
+;
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
                     | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
