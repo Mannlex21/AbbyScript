@@ -28,12 +28,12 @@ nbdist/
 .nb-gradle/
 *.properties
 fichero.txt
-private.xml 
+private.xml
 *.properties
 *.properties
 nbproject/.DS_Store
 *.properties
 *.properties
 *.properties
-*.java
-*.java~
+src/mx/edu/ittepic/automatas/Lexer.java~
+src/mx/edu/ittepic/automatas/Lexer.java

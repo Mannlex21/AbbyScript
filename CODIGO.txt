@@ -6,9 +6,7 @@ MAIN index {
 		FOR(VAR i =0;i<10;i++){
 			docCreateElem("p").setHTML("Class","clase")
 			docGetElemID("").Child("")
-			TABLE("",{TR{"Header1","Header2","Header3"}},
-				{TR{"Cuerpo1","Cuerpo2","Cuerpo3"}},
-				{TR{"Footer1","Footee2","Footer3"}})
+			TABLE("",[""],[""],["",""])
 		}
 	}
 	JS index {
