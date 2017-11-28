@@ -73,15 +73,10 @@ terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
 terminal Integer NUMERO;*/
 
 //DECLACACION DE NO TERMINALES
-non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, sentenciaPackage,
-sif, condicion, comparador, cuerpo, compuerta, funcion, parametros, sentenciaJS,
-condicionFor, sentenciaFor, expFor1,expFor2,expFor3, sentencia, trycatch,
-accederMetodos, sentenciaWhile, arrayString, hacerTabla, hover, grupo0, grupo1,
-grupo2, grupo2_2, animCondicion2, param0, param1, param2, sentenciasInterior, sentenciaHTML, sentenciaCSS, 
-condicionCSS, idnumero,NUMID,NUMIDSTR,docReady,NI, condicionCSS2, parametros2,
-sentenciaMain2,sentenciaMain3,sentenciaMain4,sentenciaMain5,
-sentenciaHTML2,sentenciaHTML3,sentenciaHTML4, primeraSentencia, cadena, tabla, cuerpoTabla, boton, input, consola, obtenerElemento,
-crearElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista;
+non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
+            sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
+            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,  consola,
+            obtenerElemento,crearElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista;
 
 precedence right LLAVE_A, LLAVE_C;
 precedence right CORCHETE_A, CORCHETE_C;
@@ -101,7 +96,7 @@ start with inicio;
 inicio ::=    sentenciaMain
             | sentenciaMain sentenciaDeclare
             | error:e
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error en la estructura del programa."));:} 
+                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error en la estructura del programa."));:}
        ;
 
 sentenciaMain ::=   MAIN ID LLAVE_A primeraSentencia LLAVE_C
@@ -130,17 +125,16 @@ sentenciasInterior::=   sentenciaJS
 ;
 
 sentenciaHTML ::=
-                    HTML LLAVE_A cuerpo LLAVE_C 
+                    HTML LLAVE_A cuerpo LLAVE_C
                     | HTML LLAVE_A LLAVE_C
-                    
-                    | HTML:e LLAVE_C 
+
+                    | HTML:e LLAVE_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
                     | HTML LLAVE_A:e
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
                     | LLAVE_A:e LLAVE_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'HTML'."));:}
-                    
-                    
+
                     | LLAVE_A:e cuerpo LLAVE_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'HTML'."));:}
                     | HTML LLAVE_A cuerpo:e
@@ -153,7 +147,7 @@ sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'ID'."));:}
                 | JS ID LLAVE_A cuerpo error:e
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
-                | JS ID error:e cuerpo LLAVE_C 
+                | JS ID error:e cuerpo LLAVE_C
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
  ;
 sentenciaCSS ::=
@@ -215,24 +209,50 @@ cuerpo ::=   sentenciaFor
             | cuerpo llamarFuncion
             | lista
             | cuerpo lista
-            /*
-            | accederMetodos
-            | accederMetodos cuerpo*/
-
-
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C;
-obtenerElemento::= docGetElemID PARENTESIS_A STRING PARENTESIS_C PUNTO funciones 
+obtenerElemento::= docGetElemID PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                    | docGetElemClass PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
 crearElemento::= docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO funciones;
 
-funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C 
+funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
             | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
-            | funciones4 PARENTESIS_A PARENTESIS_C 
+            | funciones4 PARENTESIS_A PARENTESIS_C
+
+            | error:e PARENTESIS_A STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
+            | funciones3 error:e STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('"));:}
+            | funciones3 PARENTESIS_A error:e PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING"));:}
+            | funciones3 PARENTESIS_A STRING error:e
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+
+            | error:e PARENTESIS_A STRING COMA STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
+            | funciones2 error:e STRING COMA STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+            | funciones2 PARENTESIS_A error:e COMA STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+            | funciones2 PARENTESIS_A STRING error:e STRING PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
+            | funciones2 PARENTESIS_A STRING COMA error:e PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
+            | funciones2 PARENTESIS_A STRING COMA STRING error:e
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
+
+            | error:e PARENTESIS_A PARENTESIS_C
+                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
+            | funciones4 error:e PARENTESIS_C
+                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
+            | funciones4 PARENTESIS_A error:e
+                            {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
 funciones2::= setHTML | optSelect;
-funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove;
+funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove
+
+;
 funciones4::=inHTML;
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A PARENTESIS_C
@@ -262,7 +282,7 @@ sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
 
 sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {: System.out.println("For"); :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {: System.out.println("For"); :}
-                
+
                 | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {: System.out.println("For"); :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
                 | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {: System.out.println("For"); :}
@@ -279,7 +299,7 @@ sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAV
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {: System.out.println("For"); :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{: System.out.println("For"); :}
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}               
+                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 ;
 
 condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
@@ -336,7 +356,7 @@ NUMID::= ID | NUMERO
 /*********************/
 asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
                     | ID ASIGNACION NUMIDSTR PUNTOCOMA
-                    
+
                     | VAR ID:e NUMIDSTR PUNTOCOMA
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '='."));:}
                     | VAR ID ASIGNACION:e PUNTOCOMA
@@ -401,13 +421,13 @@ funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LL
 
             | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
-            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C 
+            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A cuerpo LLAVE_C 
+            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
             | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A error:e cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '{'."));:}
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A cuerpo error:e 
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A cuerpo error:e
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '}'."));:}
 
             | FUNCTION:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
@@ -422,7 +442,7 @@ funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LL
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 
 
-            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C 
+            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
             | FUNCTION ID error:e PARENTESIS_C LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
@@ -501,210 +521,4 @@ parametros2 ::= COMA ID
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
                 | COMA:e
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
-;
-
-animCondicion2 ::= STRING | ID
-;
-
-accederMetodos ::=  CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C PUNTOCOMA
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO ChildText PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                    | ID PARENTESIS_A parametros PARENTESIS_C PUNTOCOMA
-                    | ID PARENTESIS_A PARENTESIS_C PUNTOCOMA
-
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO ChildText PARENTESIS_A STRING PARENTESIS_C error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO ChildText PARENTESIS_A STRING error:e PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO ChildText PARENTESIS_A error:e PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO ChildText error:e STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C PUNTO error:e PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba una funcion."));:}
-                    | JQElem PARENTESIS_A STRING PARENTESIS_C error:e ChildText PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
-                    | JQElem PARENTESIS_A STRING error:e PUNTO ChildText PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-                    | JQElem PARENTESIS_A error:e PARENTESIS_C PUNTO ChildText PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-                    | JQElem error:e STRING PARENTESIS_C PUNTO ChildText PARENTESIS_A STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA STRING error:e PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA error:e PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING error:e STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A error:e COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO setHTML error:e STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C PUNTO error:e PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba una funcion."));:}
-                    | docCreateElem PARENTESIS_A STRING PARENTESIS_C error:e setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
-                    | docCreateElem PARENTESIS_A STRING error:e PUNTO setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-                    | docCreateElem PARENTESIS_A error:e PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-                    | docCreateElem error:e STRING PARENTESIS_C PUNTO setHTML PARENTESIS_A STRING COMA STRING PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-
-                    | ID PARENTESIS_A parametros PARENTESIS_C error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | ID PARENTESIS_A parametros error:e PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-                    | ID error:e parametros  PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-                    | ID PARENTESIS_A PARENTESIS_C error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | ID PARENTESIS_A error:e PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-                    | ID error:e  PARENTESIS_C PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
-                    /*
-                    CONSOL param1 PUNTOCOMA
-                    | JQElem param1 PUNTO grupo0 PUNTOCOMA
-                    | docCreateElem param1 PUNTO grupo0 PUNTOCOMA
-
-
-                    | JQElem param1 PUNTO grupo1 PUNTOCOMA
-                    | docCreateElem param1 PUNTO grupo1 PUNTOCOMA
-
-
-                    | CONSOL param1 error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-
-                    | JQElem param1 PUNTO grupo0 error:e
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | JQElem param1 error:e grupo0 PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-
-                    | docCreateElem param1 PUNTO grupo0 error:e
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | docCreateElem param1 error:e grupo0 PUNTOCOMA
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
-
-                    | JQElem param1 PUNTO grupo1 error:e
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
-                    | JQElem param1 error:e grupo1 PUNTOCOMA
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
-
-                    | docCreateElem param1 PUNTO grupo1 error:e
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';."));:}
-                    | docCreateElem param1 error:e grupo1 PUNTOCOMA
-                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '.'."));:}
-
-                    | JQElem param1 PUNTO:e PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba una funcion."));:}
-                    | JQElem:e PUNTO grupo0 PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba una parametro."));:}
-                    | JQElem:e PUNTO grupo1 PUNTOCOMA
-                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba una parametro."));:}                     */
-
-
-;
-
-grupo0 ::= outHTML param0
-           | HG param0
-           | WD param0
-           | getBody param0
-           | getDate param0
-           | getDay param0
-           | getYear param0
-           | getHour param0
-           | getMSecond param0
-           | getMinute param0
-           | getMonth param0
-           | getSecond param0
-           | Val param0
-           | Remove param0
-
-            | outHTML error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | HG error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | WD error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getBody error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getDate error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getDay error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getYear error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getHour error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getMSecond error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getMinute error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getMonth error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | getSecond error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | Val error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-           | Remove error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" 'PARAMETRO' inesperado."));:}
-
-
-;
-grupo1 ::= inHTML param1
-            | div param1
-            | AClass param1
-            | RClass param1
-            | Value param1
-            | RChild param1
-            | ChildText param1
-            | Child param1
-            | setHTML param2
-            | inHTML error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | div error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | AClass error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | RClass error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | Value error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | RChild error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | ChildText:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-            | Child error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-
-
-            | setHTML:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'PARAMETRO'."));:}
-;
-
-
-param0 ::= PARENTESIS_A PARENTESIS_C
-            | PARENTESIS_A error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-;
-param1 ::=    PARENTESIS_A animCondicion2 PARENTESIS_C
-            |  PARENTESIS_A error:e PARENTESIS_C
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING' o 'ID'."));:}
-            |  PARENTESIS_A animCondicion2 error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-;
-param2 ::=   PARENTESIS_A STRING COMA STRING PARENTESIS_C
-            | PARENTESIS_A error:e COMA animCondicion2 PARENTESIS_C
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING'."));:}
-            | PARENTESIS_A STRING error:e STRING PARENTESIS_C
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
-            | PARENTESIS_A STRING COMA error:e PARENTESIS_C
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID' o 'STRING'."));:}
-            | PARENTESIS_A STRING COMA STRING error:e
-                {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
-
 ;
