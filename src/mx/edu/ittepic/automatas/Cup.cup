@@ -98,8 +98,7 @@ inicio ::=    sentenciaMain
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error en la estructura del programa."));:}
        ;
 
-sentenciaMain ::=   MAIN ID LLAVE_A primeraSentencia LLAVE_C
-
+sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
                     | MAIN:e
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'ID'."));:}
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{};'."));:}

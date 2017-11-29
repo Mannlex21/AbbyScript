@@ -17,7 +17,7 @@ parser code {:
     ArrayList<Error1> ManejadorDeErrores;
     boolean esDAssig=false;
     int fl;
-    
+
 
     public CupObjeto(java_cup.runtime.Scanner s,ArrayList<Error1> m,int tfl) {
         super(s);
@@ -105,8 +105,8 @@ inicio ::=    sentenciaMain
             | error:e
 ;
 
-sentenciaMain ::=   MAIN ID LLAVE_A primeraSentencia LLAVE_C
-                    {:fin="MAIN "+RESULT+" { \n"+fin+"}M\n";:}
+sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
+                    {:fin="MAIN "+e+" { \n"+fin+"}M\n";:}
 
                 /*Errores*/
                     | MAIN:e
@@ -127,9 +127,9 @@ sentenciasInterior::=   sentenciaJS
 
 sentenciaHTML ::=
                     HTML LLAVE_A cuerpo LLAVE_C
-                        {:fin="HTML { \n"+fin+"}H\n";:}
+                        {://fin="HTML { \n"+fin+"}H\n";:}
                     | HTML LLAVE_A LLAVE_C
-                    
+
             /*Errores*/
                     | HTML:e LLAVE_C
                     | HTML LLAVE_A:e
@@ -139,7 +139,7 @@ sentenciaHTML ::=
                     | HTML:e cuerpo LLAVE_C
 ;
 sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
-        
+
             /*Errores*/
                 | JS error:e LLAVE_A cuerpo LLAVE_C
                 | JS ID LLAVE_A cuerpo error:e
@@ -158,7 +158,7 @@ sentenciaCSS ::=
 cadena::= STRING | ID;
 condicionCSS ::= STRING DOSPUNTOS NI
                 | STRING DOSPUNTOS NI condicionCSS2
-               
+
             /*Errores*/
                 | DOSPUNTOS:e NI
                 | STRING:e NI
@@ -167,8 +167,8 @@ condicionCSS ::= STRING DOSPUNTOS NI
 ;
 condicionCSS2 ::= COMA STRING DOSPUNTOS NI
                 | COMA STRING DOSPUNTOS NI condicionCSS2
-                    
-            /*Errores*/    
+
+            /*Errores*/
                 | STRING:e DOSPUNTOS NI
                 | COMA DOSPUNTOS:e NI
                 | COMA STRING:e NI
@@ -197,16 +197,17 @@ cuerpo ::=   sentenciaFor
             | cuerpo divElem
 ;
 /*--------------------------------------------------------------*/
-consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
-            
+consola::= CONSOL PARENTESIS_A STRING:e PARENTESIS_C
+            {: fin=fin+"console.log("+e+");"; System.out.print(e):}
+
         /*Errores*/
             | CONSOL error:e NUMIDSTR PARENTESIS_C
             | CONSOL PARENTESIS_A error:e PARENTESIS_C
             | CONSOL PARENTESIS_A NUMIDSTR error:e
 ;
-obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones                    
+obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                     | elementos PARENTESIS_A STRING PARENTESIS_C
-                    
+
                 /*Errores*/
                     | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                     | elementos error:e STRING PARENTESIS_C PUNTO funciones
@@ -218,13 +219,18 @@ obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                     | elementos PARENTESIS_A error:e PARENTESIS_C
                     | elementos PARENTESIS_A STRING error:e
 ;
-elementos::= docGetElemID | docGetElemClass | docCreateElem;
+elementos::= docGetElemID
+
+            | docGetElemClass
+            | docCreateElem
+              {:fin=fin+"<ELEM > </ELEM>";:}
+;
 
 
 funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
             | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
             | funciones4 PARENTESIS_A PARENTESIS_C
-        
+
         /*Errores*/
             | error:e PARENTESIS_A STRING PARENTESIS_C
             | funciones3 error:e STRING PARENTESIS_C
@@ -249,14 +255,14 @@ funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClas
 funciones4::=inHTML;
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A PARENTESIS_C
-                    
+
                 /*Errores*/
                     | ID error:e parametros PARENTESIS_C
                     | ID PARENTESIS_A error:e PARENTESIS_C
                     | ID PARENTESIS_A parametros error:e
 ;
 lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-            
+
         /*Errores*/
             | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
@@ -269,7 +275,7 @@ lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTE
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        
+
     /*Errores*/
         |TABLE error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
         |TABLE PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
@@ -287,7 +293,7 @@ tabla::= TABLE PARENTESIS_A PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
 ;
-cuerpoTabla::= STRING | STRING COMA cuerpoTabla 
+cuerpoTabla::= STRING | STRING COMA cuerpoTabla
             /*Errores*/
                 | error:e
                 | STRING error:e
@@ -298,7 +304,7 @@ divElem::= DIV LLAVE_A cuerpo LLAVE_C
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
                     | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
-                    
+
                 /*Errores*/
                     | DECLARE error:e ID LLAVE_A LLAVE_C
                     | DECLARE PAGE error:e LLAVE_A LLAVE_C
@@ -311,13 +317,13 @@ sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
 
 sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
-            
+
             /*Errores*/
                 | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {:  :}
-                
+
                 | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {:  :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {:  :}
@@ -325,7 +331,7 @@ sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAV
 ;
 
 condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
-                    
+
                 /*Errores*/
                     | expFor1 error:e expFor2 PUNTOCOMA expFor3
                     | expFor1 PUNTOCOMA expFor2 error:e expFor3
@@ -338,7 +344,7 @@ condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
 ;
 
 expFor1 ::=   VAR ID ASIGNACION NUMERO
-        
+
         /*Errores*/
             | VAR error:e ASIGNACION  NUMERO
             | VAR ID error:e NUMERO
@@ -346,15 +352,15 @@ expFor1 ::=   VAR ID ASIGNACION NUMERO
 ;
 
 expFor2 ::= NUMID comparador NUMID
-        
+
         /*Errores*/
             | NUMID:e
 ;
 
 expFor3 ::= ID OPERCREMENTO
             | ID OPERDECREMENTO
-            
-        /*Errores*/    
+
+        /*Errores*/
             | error:e OPERDECREMENTO
             | ID error:e
 ;
@@ -370,7 +376,7 @@ NUMID::= ID | NUMERO
 asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
                     {:fin=fin+"VAR ID =STRING; \n";:}
                     | ID ASIGNACION NUMIDSTR PUNTOCOMA
-                
+
                 /*Errores*/
                     | VAR ID:e NUMIDSTR PUNTOCOMA
                     | VAR ID ASIGNACION:e PUNTOCOMA
@@ -393,7 +399,7 @@ asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
                     | ID error:e NUMIDSTR PUNTOCOMA
 ;
 NUMIDSTR ::= NUMERO | ID | STRING
-        
+
         /*Errores*/
             | NUMERO INVNUMERO:e
             | INVNUMERO:e NUMERO

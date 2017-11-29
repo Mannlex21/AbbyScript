@@ -1,13 +1,18 @@
 MAIN index {
 	HTML {
 		VAR x = 1;
-VAR x = 1;
-
+		VAR y = 2;
+		VAR e = x;
+		FOR(VAR i =0;i<10;i++){
+			docCreateElem("p").setHTML("Class","clase")
+			docGetElemID("").Child("")
+			TABLE("",[""],[""],["",""])
+		}
 	}
 	JS index {
 		nombre()
 		FUNCTION nombre(){
-			CONSOL("ENTRO")
+			CONSOL(2)
 		}
 	}
 	CSS(".clase",[

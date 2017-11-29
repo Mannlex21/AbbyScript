@@ -305,6 +305,7 @@ static String codigointer = "";
         CupObjeto parser;
         ArrayList<Error1> m = new ArrayList<Error1>();
         parser = new CupObjeto(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
+        System.out.println(flex);
         try {
             parser.parse();
         } catch (Exception ex) {

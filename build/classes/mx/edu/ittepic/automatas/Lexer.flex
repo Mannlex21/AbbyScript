@@ -48,10 +48,12 @@ WHITE=[" "|\t\r\n]
             return new Symbol(simbolo,yyline+1,yycolumn,lexema);
     }
     public Symbol token(int simbolo,int linea, int columna,String lexeme,String componenteLexico){
+            //System.out.println(yytext());
             Lexema lexema = new Lexema( yytext() );
+            //System.out.println(lexema);
             componenteL=componenteLexico;
             //Principal.setError("La cadena "+yytext()+" es invalida, se encontro en la linea "+(yyline+1)+", y en la columna "+(yycolumn+1));
-            return new Symbol(simbolo,yyline,yycolumn,lexema);
+            return new Symbol(simbolo,yyline,yycolumn,yytext());
     }
 %}
 %%
