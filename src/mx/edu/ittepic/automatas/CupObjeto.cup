@@ -1,0 +1,479 @@
+package mx.edu.ittepic.automatas;
+import java_cup.runtime.*;
+import java.io.FileReader;
+import java.util.*;
+
+action code{:
+    static String fin="";
+    :};
+
+parser code {:
+    boolean esId;
+    String tipoActual;
+    String salidaTipoActual;
+    Object valorActual;
+    String valorActualTipo;
+    String fil,col;
+    ArrayList<Error1> ManejadorDeErrores;
+    boolean esDAssig=false;
+    int fl;
+    
+
+    public CupObjeto(java_cup.runtime.Scanner s,ArrayList<Error1> m,int tfl) {
+        super(s);
+        ManejadorDeErrores =m;
+        fl = tfl;
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        report_error("No se encontró ;",s);
+
+    }
+
+    public void syntax_error(Symbol s){
+        //report_error("Sintactico",s);
+    }
+
+    public void report_error(String message, Object info){
+        if(info!=null){
+            java_cup.runtime.Symbol s =(java_cup.runtime.Symbol)info;
+            String valor="";
+            if(s.value!=null){
+                valor = s.value.toString();
+            }
+        ManejadorDeErrores.add(new Error1(message,s.left,s.right,valor));
+        }else{
+            ManejadorDeErrores.add(new Error1(message,-1,-1,"?????"));
+        }
+    }
+    /*public static void main(String[] args){
+        try {
+                Cup sintactico = new Cup(new Lexer(new FileReader(args[0])));
+            try{
+                Object result = sintactico.parse().value;
+            }catch(Exception ex){
+
+
+            }
+            System.out.println("\n*** Resultados finales ***");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }*/
+:};
+
+//DECLARACION DE TERMINALES
+terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
+            CSS, HTML, VAR, MAIN,FUNCTION,IF,FOR,OBJECT,ARRAY,DECLARE,JS,CREATE,PAGE,FALSE,THIS,RETURN,ELSE,CATCH,TRY,
+            BREAK,MAPX,FORMATTER,DATE,NULL,NEW,TRUE,PARENTESIS_A,PARENTESIS_C,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C,
+            GUIONBAJO,PUNTOCOMA,DOSPUNTOS,PUNTO,AND,ANDSIMPLE,OR,ORSIMPLE,NOT,XOR,MAYORQUE,MAYORIGUAL,MENORQUE,MENORIGUAL,IGUAL,IGUAL2,
+            DIFERENTE,SUMA,RESTA,MULTIPLICACION,DIVISION,ASIGNACION,ASIGNACIONINCRE,ASIGNACIONDECRE,ASIGNACIONMULT,ASIGNACIONDIV,OPERDECREMENTO,
+            OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID,docGetElemClass, docGetElemTag,
+            docCreateElemTag, docCreateElem, docOn, Remove, JQElem, CONSOL, Child, ChildText, RChild, beforeChild, Value, Val, makeTable, setHTML,
+            HG, WD, inHTML,outHTML, css, getBody, getDate, getDay,getYear, getHour, getMSecond, getMinute, getMonth, getSecond, div, hvr, AClass, RClass,
+            COMILLA_SIMPLE, INVNUMERO, TABLE, DIV, optSelect, LIST
+            ;
+
+/*terminal String ID,STRING;
+terminal Integer NUMERO;*/
+
+//DECLACACION DE NO TERMINALES
+non terminal inicio, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
+            sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
+            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,  consola,
+            obtenerElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem;
+non terminal sentenciaMain;
+precedence right PARENTESIS_A, PARENTESIS_C;
+precedence right LLAVE_A, LLAVE_C;
+precedence right CORCHETE_A, CORCHETE_C;
+precedence right ID,STRING;
+
+
+
+
+
+start with inicio;
+
+///////////////////////////////INICIO///////////////////////////////////
+
+inicio ::=    sentenciaMain
+                {:
+                    //fin=fin+"\n";
+                    Principal.codigointer=fin;
+                    :}
+            | sentenciaMain sentenciaDeclare
+        /*Errores*/
+            | error:e
+;
+
+sentenciaMain ::=   MAIN ID LLAVE_A primeraSentencia LLAVE_C
+                    {:fin="MAIN "+RESULT+" { \n"+fin+"}M\n";:}
+
+                /*Errores*/
+                    | MAIN:e
+                    | MAIN ID LLAVE_A:e LLAVE_C
+                    | ID:e LLAVE_A primeraSentencia LLAVE_C
+                    | MAIN:e LLAVE_A primeraSentencia LLAVE_C
+                    | MAIN ID:e primeraSentencia LLAVE_C
+                    | MAIN:e ID LLAVE_A primeraSentencia
+;
+primeraSentencia::= sentenciaHTML
+                    | sentenciaHTML sentenciasInterior
+;
+sentenciasInterior::=   sentenciaJS
+                        | sentenciaJS sentenciasInterior
+                        | sentenciaCSS
+                        | sentenciaCSS sentenciasInterior
+;
+
+sentenciaHTML ::=
+                    HTML LLAVE_A cuerpo LLAVE_C
+                        {:fin="HTML { \n"+fin+"}H\n";:}
+                    | HTML LLAVE_A LLAVE_C
+                    
+            /*Errores*/
+                    | HTML:e LLAVE_C
+                    | HTML LLAVE_A:e
+                    | LLAVE_A:e LLAVE_C
+                    | LLAVE_A:e cuerpo LLAVE_C
+                    | HTML LLAVE_A cuerpo:e
+                    | HTML:e cuerpo LLAVE_C
+;
+sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
+        
+            /*Errores*/
+                | JS error:e LLAVE_A cuerpo LLAVE_C
+                | JS ID LLAVE_A cuerpo error:e
+                | JS ID error:e cuerpo LLAVE_C
+ ;
+sentenciaCSS ::=
+                 CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+            /*Errores*/
+                | CSS error:e cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+                | CSS PARENTESIS_A error:e COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+                | CSS PARENTESIS_A cadena error:e CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+                | CSS PARENTESIS_A cadena COMA error:e condicionCSS CORCHETE_C PARENTESIS_C
+                | CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS error:e PARENTESIS_C
+                | CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C error:e PUNTOCOMA
+;
+cadena::= STRING | ID;
+condicionCSS ::= STRING DOSPUNTOS NI
+                | STRING DOSPUNTOS NI condicionCSS2
+               
+            /*Errores*/
+                | DOSPUNTOS:e NI
+                | STRING:e NI
+                | STRING DOSPUNTOS:e
+                | /*VACIO*/
+;
+condicionCSS2 ::= COMA STRING DOSPUNTOS NI
+                | COMA STRING DOSPUNTOS NI condicionCSS2
+                    
+            /*Errores*/    
+                | STRING:e DOSPUNTOS NI
+                | COMA DOSPUNTOS:e NI
+                | COMA STRING:e NI
+                | COMA STRING DOSPUNTOS:e
+;
+NI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO
+;
+
+cuerpo ::=   sentenciaFor
+            | cuerpo sentenciaFor
+            | asignarVariable
+            | cuerpo asignarVariable
+            | funcion
+            | cuerpo funcion
+            | tabla
+            | cuerpo tabla
+            | consola
+            | cuerpo consola
+            | obtenerElemento
+            | cuerpo obtenerElemento
+            | llamarFuncion
+            | cuerpo llamarFuncion
+            | lista
+            | cuerpo lista
+            | divElem
+            | cuerpo divElem
+;
+/*--------------------------------------------------------------*/
+consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
+            
+        /*Errores*/
+            | CONSOL error:e NUMIDSTR PARENTESIS_C
+            | CONSOL PARENTESIS_A error:e PARENTESIS_C
+            | CONSOL PARENTESIS_A NUMIDSTR error:e
+;
+obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones                    
+                    | elementos PARENTESIS_A STRING PARENTESIS_C
+                    
+                /*Errores*/
+                    | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
+                    | elementos error:e STRING PARENTESIS_C PUNTO funciones
+                    | elementos PARENTESIS_A error:e PARENTESIS_C PUNTO funciones
+                    | elementos PARENTESIS_A STRING error:e PUNTO funciones
+                    | elementos PARENTESIS_A STRING PARENTESIS_C error:e funciones
+                    | elementos PARENTESIS_A STRING PARENTESIS_C PUNTO error:e
+                    | elementos error:e STRING PARENTESIS_C
+                    | elementos PARENTESIS_A error:e PARENTESIS_C
+                    | elementos PARENTESIS_A STRING error:e
+;
+elementos::= docGetElemID | docGetElemClass | docCreateElem;
+
+
+funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
+            | funciones4 PARENTESIS_A PARENTESIS_C
+        
+        /*Errores*/
+            | error:e PARENTESIS_A STRING PARENTESIS_C
+            | funciones3 error:e STRING PARENTESIS_C
+            | funciones3 PARENTESIS_A error:e PARENTESIS_C
+            | funciones3 PARENTESIS_A STRING error:e
+
+            | error:e PARENTESIS_A STRING COMA STRING PARENTESIS_C
+            | funciones2 error:e STRING COMA STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A error:e COMA STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING error:e STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING COMA error:e PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING COMA STRING error:e
+
+            | error:e PARENTESIS_A PARENTESIS_C
+            | funciones4 error:e PARENTESIS_C
+            | funciones4 PARENTESIS_A error:e
+;
+funciones2::= setHTML | optSelect;
+funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove
+
+;
+funciones4::=inHTML;
+llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
+                    | ID PARENTESIS_A PARENTESIS_C
+                    
+                /*Errores*/
+                    | ID error:e parametros PARENTESIS_C
+                    | ID PARENTESIS_A error:e PARENTESIS_C
+                    | ID PARENTESIS_A parametros error:e
+;
+lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            
+        /*Errores*/
+            | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            | LIST PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            | LIST PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
+            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
+;
+
+tabla::= TABLE PARENTESIS_A PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        
+    /*Errores*/
+        |TABLE error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
+;
+cuerpoTabla::= STRING | STRING COMA cuerpoTabla 
+            /*Errores*/
+                | error:e
+                | STRING error:e
+;
+divElem::= DIV LLAVE_A cuerpo LLAVE_C
+           | DIV LLAVE_A LLAVE_C
+;
+/*--------------------------------------------------------------*/
+sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
+                    | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
+                    
+                /*Errores*/
+                    | DECLARE error:e ID LLAVE_A LLAVE_C
+                    | DECLARE PAGE error:e LLAVE_A LLAVE_C
+                    | DECLARE PAGE ID error:e LLAVE_C
+                    | DECLARE PAGE ID LLAVE_A error:e
+;
+  /*******/
+ /* For *///---------------------------------->
+/*******/
+
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
+            
+            /*Errores*/
+                | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {:  :}
+                
+                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{:  :}
+;
+
+condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
+                    
+                /*Errores*/
+                    | expFor1 error:e expFor2 PUNTOCOMA expFor3
+                    | expFor1 PUNTOCOMA expFor2 error:e expFor3
+                    | expFor1 PUNTOCOMA expFor2 PUNTOCOMA error:e
+
+                    | PUNTOCOMA:e expFor2 PUNTOCOMA expFor3
+                    | expFor1:e expFor2 PUNTOCOMA expFor3
+                    | expFor1 PUNTOCOMA:e PUNTOCOMA expFor3
+                    | expFor1 PUNTOCOMA expFor2:e expFor3
+;
+
+expFor1 ::=   VAR ID ASIGNACION NUMERO
+        
+        /*Errores*/
+            | VAR error:e ASIGNACION  NUMERO
+            | VAR ID error:e NUMERO
+            | VAR ID ASIGNACION INVNUMERO:e
+;
+
+expFor2 ::= NUMID comparador NUMID
+        
+        /*Errores*/
+            | NUMID:e
+;
+
+expFor3 ::= ID OPERCREMENTO
+            | ID OPERDECREMENTO
+            
+        /*Errores*/    
+            | error:e OPERDECREMENTO
+            | ID error:e
+;
+NUMID::= ID | NUMERO
+
+    /*Errores*/
+        | NUMERO:e INVNUMERO
+        | INVNUMERO NUMERO:e
+;
+  /*********************/
+ /* Asignar Variable  *///---------------------------------->
+/*********************/
+asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
+                    {:fin=fin+"VAR ID =STRING; \n";:}
+                    | ID ASIGNACION NUMIDSTR PUNTOCOMA
+                
+                /*Errores*/
+                    | VAR ID:e NUMIDSTR PUNTOCOMA
+                    | VAR ID ASIGNACION:e PUNTOCOMA
+                    | VAR:e ASIGNACION NUMIDSTR PUNTOCOMA
+                    | VAR ID:e PUNTOCOMA
+
+                    | ID:e NUMIDSTR PUNTOCOMA
+                    | ID ASIGNACION:e PUNTOCOMA
+                    | ASIGNACION:e NUMIDSTR PUNTOCOMA
+
+                    | VAR error:e ASIGNACION NUMIDSTR PUNTOCOMA
+                    | VAR ID error:e NUMIDSTR PUNTOCOMA
+                    | VAR ID ASIGNACION error:e PUNTOCOMA
+                    | VAR ID ASIGNACION NUMIDSTR error:e
+
+
+                    | ID error:e ASIGNACION NUMIDSTR PUNTOCOMA
+                    | ID ASIGNACION error:e PUNTOCOMA
+                    | ID ASIGNACION NUMIDSTR error:e
+                    | ID error:e NUMIDSTR PUNTOCOMA
+;
+NUMIDSTR ::= NUMERO | ID | STRING
+        
+        /*Errores*/
+            | NUMERO INVNUMERO:e
+            | INVNUMERO:e NUMERO
+;
+
+compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
+;
+
+comparador ::= MAYORQUE
+              | MAYORIGUAL
+              | MENORQUE
+              | MENORIGUAL
+              | IGUAL
+              | IGUAL2
+              | DIFERENTE
+
+;
+
+funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+
+            | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A error:e cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A cuerpo error:e
+
+            | FUNCTION:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros:e LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C error:e cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo error:e
+
+
+            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID error:e PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A error:e LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_A error:e cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_A LLAVE_A cuerpo error:e
+
+            | FUNCTION:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID:e PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A:e LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C:e cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo error:e
+
+            | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A error:e LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A error:e
+
+            | FUNCTION:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID:e parametros PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros:e LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C:e LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A error:e
+
+            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID error:e PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A error:e LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_A error:e LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_A LLAVE_A error:e
+
+            | FUNCTION:e PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID:e PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A:e LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C error:e LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A error:e
+;
+
+parametros ::=    ID
+                | ID parametros2
+;
+parametros2 ::= COMA ID
+                | COMA ID parametros
+
+            /*Errores*/
+                | ID:e parametros
+                | COMA:e
+;

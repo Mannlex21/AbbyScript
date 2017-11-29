@@ -69,7 +69,7 @@ public class Principal extends javax.swing.JFrame {
 DefaultStyledDocument doc;
 static ArrayList<String> listaErrores;
 ArrayList<Error1> manejadorErrores = new ArrayList<>();
-    
+static String codigointer = "";    
     
     /* !!!!! Cambio de color de texto mientras se escribe !!!!!*/
     
@@ -216,11 +216,12 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
         Reader reader = new BufferedReader(new FileReader(filePath+""+File.separator+"fichero.txt"));
         analizarCodigo(reader);
         sintactico();
-        //erroresCup();
+        
         String log="";
         System.out.println("Tamaño manejador errores: " + manejadorErrores.size());
         if (manejadorErrores.size() == 0) {
-
+                objetoCup();
+                System.out.print(codigointer);
         } else {
             Collections.sort(manejadorErrores, new Comparator<Error1>() { //Ordenamiento a partir de numero de linea
                 @Override
@@ -231,7 +232,7 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
             String merrores = mostrarManejadorErrores();
             appendToPane(txtPane, merrores, Color.RED);
             
-            System.out.println(merrores);
+            //System.out.println(merrores);
             manejadorErrores.clear();
             
         }
@@ -298,12 +299,12 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
             appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
     }
-    /*public void erroresCup() {
+    public void objetoCup() {
         String codigo = textPane.getText();
         Lexer flex = new Lexer(new StringReader(codigo));
-        CupErrores parser;
+        CupObjeto parser;
         ArrayList<Error1> m = new ArrayList<Error1>();
-        parser = new CupErrores(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
+        parser = new CupObjeto(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
         try {
             parser.parse();
         } catch (Exception ex) {
@@ -315,7 +316,7 @@ ArrayList<Error1> manejadorErrores = new ArrayList<>();
         }else{
             appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
-    }*/
+    }
     //AQUI AGREGA AL PANEL EL TEXTO EN COLOR
     private void appendToPane(JTextPane tp, String msg, Color c)
     {

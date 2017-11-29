@@ -66,7 +66,7 @@ terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
             OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID,docGetElemClass, docGetElemTag,
             docCreateElemTag, docCreateElem, docOn, Remove, JQElem, CONSOL, Child, ChildText, RChild, beforeChild, Value, Val, makeTable, setHTML,
             HG, WD, inHTML,outHTML, css, getBody, getDate, getDay,getYear, getHour, getMSecond, getMinute, getMonth, getSecond, div, hvr, AClass, RClass,
-            COMILLA_SIMPLE, INVNUMERO, TABLE, TR, optSelect, LIST
+            COMILLA_SIMPLE, INVNUMERO, TABLE, DIV, optSelect, LIST
             ;
 
 /*terminal String ID,STRING;
@@ -76,7 +76,7 @@ terminal Integer NUMERO;*/
 non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
             sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
             condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,  consola,
-            obtenerElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos;
+            obtenerElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem;
 
 precedence right PARENTESIS_A, PARENTESIS_C;
 precedence right LLAVE_A, LLAVE_C;
@@ -91,8 +91,6 @@ start with inicio;
 
 ///////////////////////////////INICIO///////////////////////////////////
 
-/*inicio ::= NUMERO {: System.out.println("Numero");:} | ID {: System.out.println("ID");:} | NUMERO ID {: System.out.println("NUMERO ID");:}
-           | ID NUMERO {: System.out.println("ID NUMERO");:} |error {: System.out.println("ERROR");:} ;*/
 
 inicio ::=    sentenciaMain
             | sentenciaMain sentenciaDeclare
@@ -208,6 +206,8 @@ cuerpo ::=   sentenciaFor
             | cuerpo llamarFuncion
             | lista
             | cuerpo lista
+            | divElem 
+            | cuerpo divElem 
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
@@ -351,6 +351,9 @@ cuerpoTabla::= STRING | STRING COMA cuerpoTabla
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ','."));:}
 
 ;
+divElem::= DIV LLAVE_A cuerpo LLAVE_C
+           | DIV LLAVE_A LLAVE_C
+;
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
                     | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
@@ -367,25 +370,25 @@ sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
  /* For *///---------------------------------->
 /*******/
 
-sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {: System.out.println("For"); :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {: System.out.println("For"); :}
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
 
-                | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {: System.out.println("For"); :}
+                | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
-                | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ';'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e LLAVE_C {: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 
-                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {: System.out.println("For"); :}
+                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
-                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ';'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{: System.out.println("For"); :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 ;
 

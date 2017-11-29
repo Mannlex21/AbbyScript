@@ -30,17 +30,17 @@ public class Main {
         boolean RedirigidoCup = redirigir("Cup.java");
         boolean RedirigidoSym= redirigir("sym.java");
         if(RedirigidoCup && RedirigidoSym){
-            /*String filePath = new File("").getAbsolutePath(); 
+            String filePath = new File("").getAbsolutePath(); 
             String cupErrores = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
-        +File.separator+"automatas"+File.separator+"CupErrores.cup";
-        generarCupErrores(cupErrores);*/
+        +File.separator+"automatas"+File.separator+"CupObjeto.cup";
+        generarCupObjeto(cupErrores);
             System.exit(0);
         }else System.err.println("Falló generar Cup");
      }
-    public static void generarCupErrores(String cup) throws IOException, Exception{        
-        String[] archivoCup={"-parser","CupErrores",cup};
+    public static void generarCupObjeto(String cup) throws IOException, Exception{        
+        String[] archivoCup={"-parser","CupObjeto",cup};
         java_cup.Main.main(archivoCup);
-        boolean RedirigidoCup = redirigir("CupErrores.java");
+        boolean RedirigidoCup = redirigir("CupObjeto.java");
         boolean RedirigidoSym= redirigir("sym.java");
         if(RedirigidoCup && RedirigidoSym){
             System.exit(0);

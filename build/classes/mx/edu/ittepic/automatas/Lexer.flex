@@ -60,8 +60,8 @@ WHITE=[" "|\t\r\n]
 {OurComment}    {}
 {comment}       {return token(sym.COMENTARIO, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"COMMENT");}
 "\""     {return token(sym.COMILLA_SIMPLE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"COMILLA_SIMPLE");}
-("(-"({D}+"."+)+")")|({D}+"."+)+ {System.out.println("Numero invalido"); return token(sym.INVNUMERO,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"INVALID_NUMERO");}
-("(-"{D}+")")|{D}+|{D}"."{D}+   {System.out.println("Numero"); return token(sym.NUMERO,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"NUMERO");}
+("(-"({D}+"."+)+")")|({D}+"."+)+ { return token(sym.INVNUMERO,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"INVALID_NUMERO");}
+("(-"{D}+")")|{D}+|{D}"."{D}+   { return token(sym.NUMERO,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"NUMERO");}
 
 "("     {return token(sym.PARENTESIS_A, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"PARENTESIS_ABRIR");}
 ")"     {return token(sym.PARENTESIS_C, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"PARENTESIS_CERRAR");}
@@ -128,7 +128,7 @@ WHITE=[" "|\t\r\n]
 "IN"     {return token(sym.EN, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"EN");}
 "WHILE" {return token(sym.WHILE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"WHILE");}
 "TABLE" {return token(sym.TABLE, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TABLE");}
-"TR" {return token(sym.TR, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"TR");}
+"DIV" {return token(sym.DIV, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"DIV");}
 "LIST" {return token(sym.LIST, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"LIST");}
 
 "optSelect" {return token(sym.optSelect, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"optSelect");}
