@@ -6,16 +6,7 @@
 package mx.edu.ittepic.automatas;
 
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,40 +15,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java_cup.runtime.Symbol;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
-import javax.swing.plaf.ColorUIResource;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Highlighter;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.Utilities;
-import mx.edu.ittepic.automatas.TextLineNumber;
-import mx.edu.ittepic.automatas.Tokedatos;
 
 
 /**
@@ -69,7 +43,7 @@ public class Principal extends javax.swing.JFrame {
 DefaultStyledDocument doc;
 static ArrayList<String> listaErrores;
 ArrayList<Error1> manejadorErrores = new ArrayList<>();
-static String codigointer = "";    
+static String codigointer = "",codigointerJs = "";    
     
     /* !!!!! Cambio de color de texto mientras se escribe !!!!!*/
     
@@ -109,6 +83,7 @@ static String codigointer = "";
         final AttributeSet yellow = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.yellow);
         final AttributeSet orange = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
         final AttributeSet pink = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.magenta);
+        final AttributeSet purple = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, new Color(201,127,9));
         
          doc= new DefaultStyledDocument() {
              
@@ -132,48 +107,23 @@ static String codigointer = "";
                             setCharacterAttributes(wordL, wordR - wordL, (AttributeSet) red, false);
                         } else if (text.substring(wordL, wordR).matches("(\\W)*(CSS|HTML|VAR|MAIN|FUNCTION|IF|FOR|ARRAY|DECLARE|JS|CREATE|PAGE|NULL|TRUE|FALSE|THIS|RETURN|ELSE|CATCH|TRY|BREAK|DATE|IN|SCRIPT|WHILE)")) {
                             setCharacterAttributes(wordL, wordR - wordL, (AttributeSet) pink, false);
-                        }  else if (text.substring(wordL, wordR).matches("(\\W)*(0|1|2|3|4|5|6|7|8|9)")) {
-                            setCharacterAttributes(wordL, wordR - wordL, orange, false);
-                        } else if (text.substring(wordL, wordR).matches("(\\W)*(and|or|not)")) {
-                            setCharacterAttributes(wordL, wordR - wordL, yellow, false);
+                        }  else if (text.substring(wordL, wordR).matches("(\\W)*([0-9]+)")) {
+                            setCharacterAttributes(wordL, wordR - wordL, (AttributeSet) green, false);
+                        } else if (text.substring(wordL, wordR).matches("(\\W)*([+*-])")) {
+                            setCharacterAttributes(wordL, wordR - wordL,  purple, false);
                         } else if (text.substring(wordL, wordR).matches("(\\W)*(STRING|NUMERIC)")) {
                             setCharacterAttributes(wordL, wordR - wordL, blue, false);
                         } else {
-                            setCharacterAttributes(wordL, wordR - wordL, orange , false);
+                            setCharacterAttributes(wordL, wordR - wordL, Black , false);
                         }
 
-                        wordL = wordR;
+                        wordL = wordR; 
                     }
                     wordR++;
                 }
             }
 
-            public void remove(int offs, int len) throws BadLocationException {
-                super.remove(offs, len);
-                String text = textPane.getText(0, getLength());
-                int before = findLastNonWordChar(text, offs);
-                if (before < 0) {
-                    before = 0;
-                }
-                int after = findFirstNonWordChar(text, offs);
-
-                if (text.substring(before, after).matches("(\\W)*(function|private)")) {
-                    setCharacterAttributes(before, after - before, red, false);
-                } else if (text.substring(before, after).matches("(\\W)*(for|while)")) {
-                    setCharacterAttributes(before, after - before, blue, false);
-                } else if (text.substring(before, after).matches("(\\W)*(if|else)")) {
-                    setCharacterAttributes(before, after - before, green, false);
-                } else if (text.substring(before, after).matches("(\\W)*(int|string)")) {
-                    setCharacterAttributes(before, after - before, orange, false);
-                } else if (text.substring(before, after).matches("(\\W)*(>|<)")) {
-                    setCharacterAttributes(before, after - before, yellow, false);
-                } else if (text.substring(before, after).matches("(\\W)*(begin|end)")) {
-                    setCharacterAttributes(before, after - before, pink, false);
-                } else {
-                    setCharacterAttributes(before, after - before, orange, false);
-                }
-
-            }
+            
             
         };
     
@@ -238,6 +188,7 @@ static String codigointer = "";
         if (manejadorErrores.size() == 0) {
                 objetoCup();
                 System.out.print(codigointer);
+                System.out.print(codigointerJs);
         } else {
             Collections.sort(manejadorErrores, new Comparator<Error1>() { //Ordenamiento a partir de numero de linea
                 @Override
@@ -321,7 +272,7 @@ static String codigointer = "";
         CupObjeto parser;
         ArrayList<Error1> m = new ArrayList<Error1>();
         parser = new CupObjeto(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
-        System.out.println(flex);
+        System.out.println(parser);
         try {
             parser.parse();
         } catch (Exception ex) {
@@ -383,10 +334,14 @@ static String codigointer = "";
         txtPane = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
         compile = new javax.swing.JButton();
-        open = new javax.swing.JButton();
+        auto = new javax.swing.JButton();
         save = new javax.swing.JButton();
+        open = new javax.swing.JButton();
+        com = new javax.swing.JButton();
+        grama = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDatos = new javax.swing.JTable();
+        labelfondo = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -447,50 +402,137 @@ static String codigointer = "";
         tln.setForeground(Color.WHITE);
         scrollPane.setRowHeaderView( tln );
 
-        getContentPane().add(scrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 760, 460));
+        getContentPane().add(scrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 760, 420));
 
         txtPane.setFocusable(false);
         jScrollPane1.setViewportView(txtPane);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 520, 1130, 130));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 520, 1120, 130));
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Salida");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 500, -1, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 490, -1, -1));
 
-        compile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/assets/correct.png"))); // NOI18N
+        compile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/analizar.png"))); // NOI18N
         compile.setToolTipText("Analizar");
         compile.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        compile.setBorderPainted(false);
         compile.setContentAreaFilled(false);
+        compile.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                compileMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                compileMouseEntered(evt);
+            }
+        });
         compile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 compileActionPerformed(evt);
             }
         });
-        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 0, -1, -1));
+        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 0, 70, 70));
 
-        open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/assets/open.png"))); // NOI18N
-        open.setToolTipText("Abrir");
-        open.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        open.setContentAreaFilled(false);
-        open.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openActionPerformed(evt);
+        auto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/grafo.png"))); // NOI18N
+        auto.setToolTipText("Automata");
+        auto.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        auto.setBorderPainted(false);
+        auto.setContentAreaFilled(false);
+        auto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                autoMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                autoMouseEntered(evt);
             }
         });
-        getContentPane().add(open, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        auto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 0, 70, 70));
 
         save.setBackground(null);
-        save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/assets/save.png"))); // NOI18N
+        save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar.png"))); // NOI18N
         save.setToolTipText("Guardar");
         save.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        save.setBorderPainted(false);
         save.setContentAreaFilled(false);
+        save.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                saveMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                saveMouseEntered(evt);
+            }
+        });
         save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveActionPerformed(evt);
             }
         });
-        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, -1, -1));
+        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 0, 70, 70));
+
+        open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/carpeta2.png"))); // NOI18N
+        open.setToolTipText("Abrir");
+        open.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        open.setBorderPainted(false);
+        open.setContentAreaFilled(false);
+        open.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                openMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                openMouseEntered(evt);
+            }
+        });
+        open.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openActionPerformed(evt);
+            }
+        });
+        getContentPane().add(open, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 70, 70));
+
+        com.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/caja.png"))); // NOI18N
+        com.setToolTipText("Analizar");
+        com.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        com.setBorderPainted(false);
+        com.setContentAreaFilled(false);
+        com.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                comMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                comMouseEntered(evt);
+            }
+        });
+        com.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comActionPerformed(evt);
+            }
+        });
+        getContentPane().add(com, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, 70, 70));
+
+        grama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/abc.png"))); // NOI18N
+        grama.setToolTipText("Gramatica");
+        grama.setBorderPainted(false);
+        grama.setContentAreaFilled(false);
+        grama.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gramaMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                gramaMouseEntered(evt);
+            }
+        });
+        grama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gramaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 0, 70, 70));
 
         tblDatos.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         tblDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -515,7 +557,10 @@ static String codigointer = "";
             tblDatos.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(772, 40, 340, 430));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 340, -1));
+
+        labelfondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/fondo2.png"))); // NOI18N
+        getContentPane().add(labelfondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1140, 660));
 
         jMenuBar1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
 
@@ -523,6 +568,7 @@ static String codigointer = "";
         jMenu1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
 
         jMenuItem1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/carpeta.png"))); // NOI18N
         jMenuItem1.setText("Abrir archivo");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -532,6 +578,7 @@ static String codigointer = "";
         jMenu1.add(jMenuItem1);
 
         jMenuItem12.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar3.png"))); // NOI18N
         jMenuItem12.setText("Guardar");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -541,6 +588,7 @@ static String codigointer = "";
         jMenu1.add(jMenuItem12);
 
         jMenuItem2.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/salir3.png"))); // NOI18N
         jMenuItem2.setText("Salir");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -555,14 +603,17 @@ static String codigointer = "";
         jMenu3.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
 
         jMenuItem7.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/copiar3.png"))); // NOI18N
         jMenuItem7.setText("Copiar");
         jMenu3.add(jMenuItem7);
 
         jMenuItem8.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/tijeras3.png"))); // NOI18N
         jMenuItem8.setText("Cortar");
         jMenu3.add(jMenuItem8);
 
         jMenuItem9.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/pegar3.png"))); // NOI18N
         jMenuItem9.setText("Pegar");
         jMenu3.add(jMenuItem9);
 
@@ -572,6 +623,7 @@ static String codigointer = "";
         jMenu4.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
 
         jMenuItem10.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/analizar3.png"))); // NOI18N
         jMenuItem10.setText("Analizar");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -581,15 +633,17 @@ static String codigointer = "";
         jMenu4.add(jMenuItem10);
 
         jMenuItem11.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/caja3.png"))); // NOI18N
         jMenuItem11.setText("Compilar");
         jMenu4.add(jMenuItem11);
 
         jMenuBar1.add(jMenu4);
 
-        jMenu2.setText("Informacion");
+        jMenu2.setText("Información");
         jMenu2.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
 
         jMenuItem4.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/informacion3.png"))); // NOI18N
         jMenuItem4.setText("Sobre el programa");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -639,15 +693,12 @@ static String codigointer = "";
     
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         System.exit(0);
-        
-
-        // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         
         showMessageDialog(null, "Analizador Lexico elaborado por: \nCasillas Ureña Fermin Michel\n"
-                + "Murillo Macias Manuel Alejandro");
+                + "Murillo Macías Manuel Alejandro\nJuan Carlos Ramírez Tapia\nEdgar Ernesto Lozano Mora");
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -751,33 +802,11 @@ static String codigointer = "";
         guardar();
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
-    private void openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActionPerformed
+    private void autoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoActionPerformed
 
-        int returnVal = fileChooser.showOpenDialog(this);
-    if (returnVal == JFileChooser.APPROVE_OPTION) {
-        File file = fileChooser.getSelectedFile();
-        try {
-          BufferedReader br = new BufferedReader( new FileReader( file.getAbsolutePath() ) );
-              
-          StringBuilder sb = new StringBuilder();
-    
-          String line = br.readLine();
+                new V_Automata().setVisible(true);
 
-          while (line != null) {
-        
-              sb.append(line);
-              sb.append(System.lineSeparator());
-              line = br.readLine();
-    }
-          textPane.setText(sb.toString());
-        } catch (IOException ex) {
-          System.out.println("problem accessing file"+file.getAbsolutePath());
-        }
-    } else {
-        System.out.println("File access cancelled by user.");
-    }
-
-    }//GEN-LAST:event_openActionPerformed
+    }//GEN-LAST:event_autoActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
 	guardar();
@@ -800,6 +829,90 @@ static String codigointer = "";
 
         // TODO add your handling code here:
     }//GEN-LAST:event_compileActionPerformed
+
+    private void autoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autoMouseExited
+        auto.setIcon(new javax.swing.ImageIcon(getClass().getResource("grafo.png")));        // TODO add your handling code here:
+    }//GEN-LAST:event_autoMouseExited
+
+    private void autoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_autoMouseEntered
+      auto.setIcon(new javax.swing.ImageIcon(getClass().getResource("grafo2.png")));        // TODO add your handling code here:
+    }//GEN-LAST:event_autoMouseEntered
+
+    private void saveMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveMouseEntered
+     save.setIcon(new javax.swing.ImageIcon(getClass().getResource("guardar2.png")));        // TODO add your handling code here:
+    }//GEN-LAST:event_saveMouseEntered
+
+    private void saveMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_saveMouseExited
+        save.setIcon(new javax.swing.ImageIcon(getClass().getResource("guardar.png")));         // TODO add your handling code here:
+    }//GEN-LAST:event_saveMouseExited
+
+    private void compileMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileMouseEntered
+       compile.setIcon(new javax.swing.ImageIcon(getClass().getResource("analizar2.png")));         // TODO add your handling code here:
+    }//GEN-LAST:event_compileMouseEntered
+
+    private void compileMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_compileMouseExited
+        compile.setIcon(new javax.swing.ImageIcon(getClass().getResource("analizar.png")));          // TODO add your handling code here:
+    }//GEN-LAST:event_compileMouseExited
+
+    private void comMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comMouseExited
+        com.setIcon(new javax.swing.ImageIcon(getClass().getResource("caja.png")));
+    }//GEN-LAST:event_comMouseExited
+
+    private void comMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_comMouseEntered
+        com.setIcon(new javax.swing.ImageIcon(getClass().getResource("caja2.png")));
+    }//GEN-LAST:event_comMouseEntered
+
+    private void comActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comActionPerformed
+
+    private void openMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openMouseExited
+         open.setIcon(new javax.swing.ImageIcon(getClass().getResource("carpeta2.png")));
+    }//GEN-LAST:event_openMouseExited
+
+    private void openMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openMouseEntered
+           open.setIcon(new javax.swing.ImageIcon(getClass().getResource("carpeta3.png")));         // TODO add your handling code here:
+    }//GEN-LAST:event_openMouseEntered
+
+    private void openActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openActionPerformed
+int returnVal = fileChooser.showOpenDialog(this);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        try {
+          BufferedReader br = new BufferedReader( new FileReader( file.getAbsolutePath() ) );
+              
+          StringBuilder sb = new StringBuilder();
+    
+          String line = br.readLine();
+
+          while (line != null) {
+        
+              sb.append(line);
+              sb.append(System.lineSeparator());
+              line = br.readLine();
+    }
+          textPane.setText(sb.toString());
+        } catch (IOException ex) {
+          System.out.println("problem accessing file"+file.getAbsolutePath());
+        }
+    } else {
+        System.out.println("File access cancelled by user.");
+    }
+             
+        // TODO add your handling code here:
+    }//GEN-LAST:event_openActionPerformed
+
+    private void gramaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gramaActionPerformed
+        new V_gramatica().setVisible(true);
+    }//GEN-LAST:event_gramaActionPerformed
+
+    private void gramaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gramaMouseEntered
+          grama.setIcon(new javax.swing.ImageIcon(getClass().getResource("abc2.png")));                  // TODO add your handling code here:
+    }//GEN-LAST:event_gramaMouseEntered
+
+    private void gramaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gramaMouseExited
+          grama.setIcon(new javax.swing.ImageIcon(getClass().getResource("abc.png"))); // TODO add your handling code here:
+    }//GEN-LAST:event_gramaMouseExited
 
     /**
      * @param args the command line arguments
@@ -848,9 +961,12 @@ static String codigointer = "";
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton auto;
     private javax.swing.JPopupMenu clicDMenu;
+    private javax.swing.JButton com;
     private javax.swing.JButton compile;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JButton grama;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -871,6 +987,7 @@ static String codigointer = "";
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labelfondo;
     private javax.swing.JButton open;
     private javax.swing.JButton save;
     private javax.swing.JFileChooser saveDialog;

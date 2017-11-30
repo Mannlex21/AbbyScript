@@ -4,10 +4,11 @@ import java.io.FileReader;
 import java.util.*;
 
 action code{:
-    static String fin="";
-    static String v="",v2="",v3="", vText="";
+    static String fin="",finJs="";
+    static String v="",v2="",v3="", vText="",jsText="";
     static String attrElem="",attrElem2="", listaElem="";
-    static String expFor1="",expFor2="",expFor3="",expForOper="",expForAsig="",forElem="", varFor=""; 
+    static String expFor1="",expFor2="",expFor3="",expForOper="",expForAsig="",forElem="", varFor="",
+                    varExpFor1=""; 
     :};
 
 parser code {:
@@ -102,81 +103,40 @@ start with inicio;
 inicio ::=    sentenciaMain
                 {:
                     //fin=fin+"\n";
-                    Principal.codigointer=fin;
+                    Principal.codigointer="\nHTML INICIO\n"+fin+"HTML FIN\n";
+                    Principal.codigointerJs="\nJS INICIO\n"+finJs+"JS FIN\n";
                     :}
             | sentenciaMain sentenciaDeclare
-        /*Errores*/
-            | error:e
 ;
 
 sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
                     {://fin="MAIN "+e+" { \n"+fin+"}M\n";:}
 
-                /*Errores*/
-                    | MAIN:e
-                    | MAIN ID LLAVE_A:e LLAVE_C
-                    | ID:e LLAVE_A primeraSentencia LLAVE_C
-                    | MAIN:e LLAVE_A primeraSentencia LLAVE_C
-                    | MAIN ID:e primeraSentencia LLAVE_C
-                    | MAIN:e ID LLAVE_A primeraSentencia
 ;
 primeraSentencia::= sentenciaHTML
-                    //| sentenciaHTML sentenciasInterior
+                    | sentenciaHTML sentenciasInterior
 ;
 sentenciasInterior::=   sentenciaJS
-                        | sentenciaJS sentenciasInterior
+                        /*| sentenciaJS sentenciasInterior
                         | sentenciaCSS
-                        | sentenciaCSS sentenciasInterior
+                        | sentenciaCSS sentenciasInterior*/
 ;
 
 sentenciaHTML ::=
                     HTML LLAVE_A cuerpo LLAVE_C
                         {://fin="HTML { \n"+fin+"}H\n";:}
                     | HTML LLAVE_A LLAVE_C
-
-            /*Errores*/
-                    | HTML:e LLAVE_C
-                    | HTML LLAVE_A:e
-                    | LLAVE_A:e LLAVE_C
-                    | LLAVE_A:e cuerpo LLAVE_C
-                    | HTML LLAVE_A cuerpo:e
-                    | HTML:e cuerpo LLAVE_C
 ;
 sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
-
-            /*Errores*/
-                | JS error:e LLAVE_A cuerpo LLAVE_C
-                | JS ID LLAVE_A cuerpo error:e
-                | JS ID error:e cuerpo LLAVE_C
  ;
-sentenciaCSS ::=
-                 CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
-            /*Errores*/
-                | CSS error:e cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
-                | CSS PARENTESIS_A error:e COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
-                | CSS PARENTESIS_A cadena error:e CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
-                | CSS PARENTESIS_A cadena COMA error:e condicionCSS CORCHETE_C PARENTESIS_C
-                | CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS error:e PARENTESIS_C
-                | CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C error:e PUNTOCOMA
+sentenciaCSS ::= CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
 ;
 cadena::= STRING | ID;
 condicionCSS ::= STRING DOSPUNTOS NI
                 | STRING DOSPUNTOS NI condicionCSS2
-
-            /*Errores*/
-                | DOSPUNTOS:e NI
-                | STRING:e NI
-                | STRING DOSPUNTOS:e
-                | /*VACIO*/
 ;
 condicionCSS2 ::= COMA STRING DOSPUNTOS NI
                 | COMA STRING DOSPUNTOS NI condicionCSS2
-
-            /*Errores*/
-                | STRING:e DOSPUNTOS NI
-                | COMA DOSPUNTOS:e NI
-                | COMA STRING:e NI
-                | COMA STRING DOSPUNTOS:e
 ;
 NI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO
 ;
@@ -191,7 +151,6 @@ cuerpo ::=   sentenciaFor
             | cuerpo lista
             | divElem
             | cuerpo divElem
-    /*
             | asignarVariable
             | cuerpo asignarVariable
             | funcion
@@ -202,7 +161,7 @@ cuerpo ::=   sentenciaFor
             | cuerpo obtenerElemento
             | llamarFuncion
             | cuerpo llamarFuncion
-    */       
+      
             
 ;
 cuerpoFor ::=   sentenciaFor
@@ -225,19 +184,14 @@ cuerpoFor ::=   sentenciaFor
             | obtenerElemento
             | cuerpo obtenerElemento
             | llamarFuncion
-            | cuerpo llamarFuncion
-    */       
-            
+            | cuerpo llamarFuncion       
+       */     
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A STRING:e PARENTESIS_C
             {: 
-                //fin=fin+"console.log("+e+");"; System.out.print(e);:}
-
-        /*Errores*/
-            | CONSOL error:e NUMIDSTR PARENTESIS_C
-            | CONSOL PARENTESIS_A error:e PARENTESIS_C
-            | CONSOL PARENTESIS_A NUMIDSTR error:e
+                finJs=finJs+"console.log("+e.toString()+");\n";
+            :}
 ;
 crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                         {:
@@ -264,35 +218,22 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                                 fin=fin+"<"+x[1]+"></"+x[1]+">\n";
                             }
                         :}
-                    /*Errores*/
-                    | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
-                    | elementos2 error:e STRING PARENTESIS_C PUNTO funciones
-                    | elementos2 PARENTESIS_A error:e PARENTESIS_C PUNTO funciones
-                    | elementos2 PARENTESIS_A STRING error:e PUNTO funciones
-                    | elementos2 PARENTESIS_A STRING PARENTESIS_C error:e funciones
-                    | elementos2 PARENTESIS_A STRING PARENTESIS_C PUNTO error:e
-                    | elementos2 error:e STRING PARENTESIS_C
-                    | elementos2 PARENTESIS_A error:e PARENTESIS_C
-                    | elementos2 PARENTESIS_A STRING error:e
 ;
 obtenerElemento::= elementos PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
-
+                    {:
+                            if(v.equals("docGetElemID")){
+                               finJs=finJs+"document.getElementById("+e.toString()+")"+jsText+"\n";
+                            }
+                    :}
                     | elementos PARENTESIS_A STRING:e PARENTESIS_C
-
-
-                /*Errores*/
-                    | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
-                    | elementos error:e STRING PARENTESIS_C PUNTO funciones
-                    | elementos PARENTESIS_A error:e PARENTESIS_C PUNTO funciones
-                    | elementos PARENTESIS_A STRING error:e PUNTO funciones
-                    | elementos PARENTESIS_A STRING PARENTESIS_C error:e funciones
-                    | elementos PARENTESIS_A STRING PARENTESIS_C PUNTO error:e
-                    | elementos error:e STRING PARENTESIS_C
-                    | elementos PARENTESIS_A error:e PARENTESIS_C
-                    | elementos PARENTESIS_A STRING error:e
+                        {:
+                            if(v.equals("docGetElemID")){
+                               finJs=finJs+"document.getElementById("+e.toString()+");\n";
+                            }
+                        :}
 ;
-elementos::= docGetElemID
-            | docGetElemClass
+elementos::= docGetElemID {:v="docGetElemID";:}
+            | docGetElemClass {:v="docCreateElem";:}
 ;
 elementos2::= docCreateElem
               {:v="docCreateElem";:}
@@ -302,6 +243,21 @@ funciones::=funciones3 PARENTESIS_A STRING:e PARENTESIS_C
             {:
                 if(v3.equals("ChildText")){
                     vText=e.toString();
+                    jsText=".appendChild(document.createTextNode("+e.toString()+"));\n";
+                }else if(v3.equals("Child")){
+                    jsText=".appendChild(document.getElementById("+e.toString()+"));\n";
+                }else if(v3.equals("beforeChild")){
+                    jsText=".insertBefore(newItem, list.childNodes[0]);\n";
+                }else if(v3.equals("getAtt")){
+                        jsText=".getAttribute("+e.toString()+");\n";
+                }else if(v3.equals("RChild")){
+                    jsText=".removeChild("+e.toString()+");\n";
+                }else if(v3.equals("AClass")){
+                    jsText=".addClass( "+e.toString()+" );\n";
+                }else if(v3.equals("RClass")){
+                    jsText=".removeClass( "+e.toString()+" );\n";
+                }else if(v3.equals("Remove")){
+                    jsText=".removeChild( "+e.toString()+" );\n";
                 }
             :}
                 
@@ -312,6 +268,8 @@ funciones::=funciones3 PARENTESIS_A STRING:e PARENTESIS_C
                     String[] x2= e1.toString().split("\"");
                     attrElem=attrElem+x2[1]+",";
                     attrElem2=attrElem2+x[1]+",";
+                    }else if(v2.equals("beforeChild")){
+                        jsText=".insertBefore(document.getElementById("+e1.toString()+"), document.getElementById("+e2.toString()+"));\n";
                     }
                 :}
             | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C PUNTO funciones
@@ -322,39 +280,24 @@ funciones::=funciones3 PARENTESIS_A STRING:e PARENTESIS_C
                     attrElem=attrElem+x2[1]+",";
                     attrElem2=attrElem2+x[1]+","; 
                     }
+                    jsText=jsText+"\n";
                 :}
             | funciones4 PARENTESIS_A PARENTESIS_C
+                {:
+                    if(v3.equals("inHTML")){
+                        jsText=".innerHTML;\n";
+                    }
+                :}
 
-        /*Errores*/
-            | error:e PARENTESIS_A STRING PARENTESIS_C
-            | funciones3 error:e STRING PARENTESIS_C
-            | funciones3 PARENTESIS_A error:e PARENTESIS_C
-            | funciones3 PARENTESIS_A STRING error:e
-
-            | error:e PARENTESIS_A STRING COMA STRING PARENTESIS_C
-            | funciones2 error:e STRING COMA STRING PARENTESIS_C
-            | funciones2 PARENTESIS_A error:e COMA STRING PARENTESIS_C
-            | funciones2 PARENTESIS_A STRING error:e STRING PARENTESIS_C
-            | funciones2 PARENTESIS_A STRING COMA error:e PARENTESIS_C
-            | funciones2 PARENTESIS_A STRING COMA STRING error:e
-
-            | error:e PARENTESIS_A PARENTESIS_C
-            | funciones4 error:e PARENTESIS_C
-            | funciones4 PARENTESIS_A error:e
 ;
-funciones2::= setHTML {:v2="setHTML";:}| optSelect;
-funciones3::= ChildText {:v3="ChildText";:} | Child {:v3="Child";:} | beforeChild {:v3="beforeChild";:} | getAtt {:v3="getAtt";:} 
+funciones2::= setHTML {:v2="setHTML";:}| optSelect | beforeChild {:v2="beforeChild";:};
+funciones3::= ChildText {:v3="ChildText";:} | Child {:v3="Child";:}  | getAtt {:v3="getAtt";:} 
             | RChild {:v3="RChild";:} | AClass {:v3="AClass";:} | RClass {:v3="RClass";:} | Remove {:v3="Remove";:}
 
 ;
-funciones4::=inHTML;
+funciones4::=inHTML {:v3="inHTML";:};
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A PARENTESIS_C
-
-                /*Errores*/
-                    | ID error:e parametros PARENTESIS_C
-                    | ID PARENTESIS_A error:e PARENTESIS_C
-                    | ID PARENTESIS_A parametros error:e
 ;
 lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             {:
@@ -367,43 +310,15 @@ lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PAREN
                 }
                 fin=fin+"<ul>"+x3+"\n</ul>\n";
             :}
-        /*Errores*/
-            | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-            | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-            | LIST PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-            | LIST PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
-            | LIST PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
-            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
-            | LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
 ;
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-
-    /*Errores*/
-        |TABLE error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA error:e cuerpoTabla CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A error:e CORCHETE_C PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
 ;
 cuerpoTabla::= STRING:e
                 {:listaElem=listaElem+e.toString()+",";:}
                 | STRING:e COMA cuerpoTabla
                 {:listaElem=listaElem+e.toString()+",";:}
-            /*Errores*/
-                | error:e
-                | STRING error:e
 ;
 
 divElem::= DIV ID:e LLAVE_A cuerpo LLAVE_C
@@ -413,91 +328,93 @@ divElem::= DIV ID:e LLAVE_A cuerpo LLAVE_C
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
                     | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
-
-                /*Errores*/
-                    | DECLARE error:e ID LLAVE_A LLAVE_C
-                    | DECLARE PAGE error:e LLAVE_A LLAVE_C
-                    | DECLARE PAGE ID error:e LLAVE_C
-                    | DECLARE PAGE ID LLAVE_A error:e
 ;
   /*******/
  /* For *///---------------------------------->
 /*******/
 
 sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C 
-                {: 
+                {:
+                        String x ="";
                         if(expForAsig.equals("<")){
                             if(expForOper.equals("++")){
-                                String x ="";
+                                
                                 for(int i=Integer.parseInt(expFor1);i<(Integer.parseInt(expFor2)-1);i++){
                                     //System.out.print("Prueba-");
                                     x=x+forElem;
                                 }
                                 fin=fin+x;
                             }else if(expForOper.equals("--")){
-                                 for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i--){
-
-                                  }
+                                 for(int i=Integer.parseInt(expFor1);i<(Integer.parseInt(expFor2)-1);i--){
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }   
+                            
+                        }else if(expForAsig.equals(">")){
+                            if(expForOper.equals("++")){
+                                for(int i=Integer.parseInt(expFor1);i>(Integer.parseInt(expFor2)-1);i++){
+                                    //System.out.print("Prueba-");
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }else if(expForOper.equals("--")){
+                                 for(int i=Integer.parseInt(expFor1);i>(Integer.parseInt(expFor2)-1);i--){
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }   
+                            
+                        }else if(expForAsig.equals("<=")){
+                            if(expForOper.equals("++")){
+                                for(int i=Integer.parseInt(expFor1);i<=(Integer.parseInt(expFor2)-1);i++){
+                                    //System.out.print("Prueba-");
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }else if(expForOper.equals("--")){
+                                 for(int i=Integer.parseInt(expFor1);i<=(Integer.parseInt(expFor2)-1);i--){
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }   
+                            
+                        }else if(expForAsig.equals(">=")){
+                            if(expForOper.equals("++")){
+                                
+                                for(int i=Integer.parseInt(expFor1);i>=(Integer.parseInt(expFor2)-1);i++){
+                                    //System.out.print("Prueba-");
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }else if(expForOper.equals("--")){
+                                 for(int i=Integer.parseInt(expFor1);i>=(Integer.parseInt(expFor2)-1);i--){
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
                             }   
                             
                         }
-                        
+                        finJs=finJs+"FOR();\n";
                      :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C 
-                   {: 
-                        if(expForAsig.equals("<")){
-                            if(expForOper.equals("++")){
-                                for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i++){
-                                    fin=fin+"for";
-                                }
-                            }else if(expForOper.equals("--")){
-                                 for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i--){
-
-                                  }
-                            }   
-                            
-                        }
-                        
-                     :}
-
-            /*Errores*/
-                | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor error:e LLAVE_A LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {:  :}
-
-                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{:  :}
+                    {:System.out.println("entro");
+                        String[] x= varExpFor1.split("");
+                       finJs=finJs+"FOR(var "+varExpFor1+" = "+Integer.parseInt(expFor1)+"){};\n";
+                    :}
 ;
 
 condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
 
-                /*Errores*/
-                    | expFor1 error:e expFor2 PUNTOCOMA expFor3
-                    | expFor1 PUNTOCOMA expFor2 error:e expFor3
-                    | expFor1 PUNTOCOMA expFor2 PUNTOCOMA error:e
-
-                    | PUNTOCOMA:e expFor2 PUNTOCOMA expFor3
-                    | expFor1:e expFor2 PUNTOCOMA expFor3
-                    | expFor1 PUNTOCOMA:e PUNTOCOMA expFor3
-                    | expFor1 PUNTOCOMA expFor2:e expFor3
 ;
 
-expFor1 ::=   VAR ID ASIGNACION:e1 NUMERO:e
+expFor1 ::=   VAR ID:i ASIGNACION NUMERO:e
                 {:expFor1=e.toString();
+                 varExpFor1=i.toString();
                    varFor="true";:}
-        /*Errores*/
-            | VAR error:e ASIGNACION  NUMERO
-            | VAR ID error:e NUMERO
-            | VAR ID ASIGNACION INVNUMERO:e
 ;
 
 expFor2 ::= NUMID comparador NUMID
-            
-        /*Errores*/
-            | NUMID:e
 ;
 
 expFor3 ::= ID:e OPERCREMENTO:o
@@ -506,15 +423,8 @@ expFor3 ::= ID:e OPERCREMENTO:o
             | ID:e OPERDECREMENTO:o
             {:expFor3=e.toString();
               expForOper=o.toString();:}
-        /*Errores*/
-            | error:e OPERDECREMENTO
-            | ID error:e
 ;
 NUMID::= ID:e {:expFor2=e.toString();:}| NUMERO:e {:expFor2=e.toString();:}
-
-    /*Errores*/
-        | NUMERO:e INVNUMERO
-        | INVNUMERO NUMERO:e
 ;
   /*********************/
  /* Asignar Variable  *///---------------------------------->
@@ -522,33 +432,8 @@ NUMID::= ID:e {:expFor2=e.toString();:}| NUMERO:e {:expFor2=e.toString();:}
 asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
                     {:fin=fin+"VAR ID =STRING; \n";:}
                     | ID ASIGNACION NUMIDSTR PUNTOCOMA
-
-                /*Errores*/
-                    | VAR ID:e NUMIDSTR PUNTOCOMA
-                    | VAR ID ASIGNACION:e PUNTOCOMA
-                    | VAR:e ASIGNACION NUMIDSTR PUNTOCOMA
-                    | VAR ID:e PUNTOCOMA
-
-                    | ID:e NUMIDSTR PUNTOCOMA
-                    | ID ASIGNACION:e PUNTOCOMA
-                    | ASIGNACION:e NUMIDSTR PUNTOCOMA
-
-                    | VAR error:e ASIGNACION NUMIDSTR PUNTOCOMA
-                    | VAR ID error:e NUMIDSTR PUNTOCOMA
-                    | VAR ID ASIGNACION error:e PUNTOCOMA
-                    | VAR ID ASIGNACION NUMIDSTR error:e
-
-
-                    | ID error:e ASIGNACION NUMIDSTR PUNTOCOMA
-                    | ID ASIGNACION error:e PUNTOCOMA
-                    | ID ASIGNACION NUMIDSTR error:e
-                    | ID error:e NUMIDSTR PUNTOCOMA
 ;
 NUMIDSTR ::= NUMERO | ID | STRING
-
-        /*Errores*/
-            | NUMERO INVNUMERO:e
-            | INVNUMERO:e NUMERO
 ;
 
 compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
@@ -568,55 +453,6 @@ funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LL
             | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
             | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
             | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
-
-            | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A error:e cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A cuerpo error:e
-
-            | FUNCTION:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION error:e parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros:e LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C error:e cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo error:e
-
-
-            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID error:e PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A error:e LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_A error:e cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_A LLAVE_A cuerpo error:e
-
-            | FUNCTION:e PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID:e PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A:e LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C:e cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo error:e
-
-            | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID error:e parametros PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros error:e LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A error:e LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_A LLAVE_A error:e
-
-            | FUNCTION:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID:e parametros PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros:e LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C:e LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A error:e
-
-            | FUNCTION error:e PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID error:e PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A error:e LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_A error:e LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_A LLAVE_A error:e
-
-            | FUNCTION:e PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID:e PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A:e LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C error:e LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A error:e
 ;
 
 parametros ::=    ID
@@ -624,8 +460,4 @@ parametros ::=    ID
 ;
 parametros2 ::= COMA ID
                 | COMA ID parametros
-
-            /*Errores*/
-                | ID:e parametros
-                | COMA:e
 ;
