@@ -1,11 +1,12 @@
 MAIN index {
 	HTML {
-docCreateElem("p").setHTML("Class","clase1111111111111111111")
-docCreateElem("p").setHTML("Class","clase2222222222222222222")
-		FOR(VAR I=0;I<3;I++){
-			docCreateElem("p").setHTML("Class","clase1")
-			docCreateElem("p").setHTML("Class","clase2")
-		}
-		docCreateElem("p").setHTML("Class","clase")
+	FOR(VAR ID=0;I<3;I++){
+		docCreateElem("input").setHTML("Class","clase1")	
+	}	docCreateElem("input").setHTML("Class","clase").setHTML("id","c").ChildText("Hola")
 	}
+
+	JS ID{
+		FOR(VAR ID=0;I<10;I++){}
+	}
+
 }

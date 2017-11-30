@@ -2,4 +2,9 @@ MAIN index {
 	HTML {
 		docCreateElem("p").setHTML("Class","clase")
 	}
+
+	JS ID{
+		FOR(VAR ID=0;I<10;I++){}
+	}
+
 }
