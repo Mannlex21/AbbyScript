@@ -5,6 +5,9 @@ import java.util.*;
 
 action code{:
     static String fin="";
+    static String v="",v2="",v3="", vText="";
+    static String attrElem="",attrElem2="", listaElem="";
+    static String expFor1="",expFor2="",expFor3="",expForOper="",expForAsig="",forElem="", varFor=""; 
     :};
 
 parser code {:
@@ -79,8 +82,9 @@ terminal Integer NUMERO;*/
 //DECLACACION DE NO TERMINALES
 non terminal inicio, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
             sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
-            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,  consola,
-            obtenerElemento,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem;
+            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,cuerpoLista,  consola,
+            obtenerElemento,crearElemento,elementos2,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem,
+            cuerpoFor;
 non terminal sentenciaMain;
 precedence right PARENTESIS_A, PARENTESIS_C;
 precedence right LLAVE_A, LLAVE_C;
@@ -106,7 +110,7 @@ inicio ::=    sentenciaMain
 ;
 
 sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
-                    {:fin="MAIN "+e+" { \n"+fin+"}M\n";:}
+                    {://fin="MAIN "+e+" { \n"+fin+"}M\n";:}
 
                 /*Errores*/
                     | MAIN:e
@@ -117,7 +121,7 @@ sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
                     | MAIN:e ID LLAVE_A primeraSentencia
 ;
 primeraSentencia::= sentenciaHTML
-                    | sentenciaHTML sentenciasInterior
+                    //| sentenciaHTML sentenciasInterior
 ;
 sentenciasInterior::=   sentenciaJS
                         | sentenciaJS sentenciasInterior
@@ -179,34 +183,102 @@ NI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO
 
 cuerpo ::=   sentenciaFor
             | cuerpo sentenciaFor
+            | tabla
+            | cuerpo tabla
+            | crearElemento
+            | cuerpo crearElemento
+            | lista
+            | cuerpo lista
+            | divElem
+            | cuerpo divElem
+    /*
             | asignarVariable
             | cuerpo asignarVariable
             | funcion
             | cuerpo funcion
-            | tabla
-            | cuerpo tabla
             | consola
             | cuerpo consola
             | obtenerElemento
             | cuerpo obtenerElemento
             | llamarFuncion
             | cuerpo llamarFuncion
+    */       
+            
+;
+cuerpoFor ::=   sentenciaFor
+            | cuerpoFor sentenciaFor            
+            | tabla
+            | cuerpoFor tabla
+            | crearElemento
+            | cuerpoFor crearElemento
             | lista
-            | cuerpo lista
+            | cuerpoFor lista
             | divElem
-            | cuerpo divElem
+            | cuerpoFor divElem
+    /*
+            | asignarVariable
+            | cuerpo asignarVariable
+            | funcion
+            | cuerpo funcion
+            | consola
+            | cuerpo consola
+            | obtenerElemento
+            | cuerpo obtenerElemento
+            | llamarFuncion
+            | cuerpo llamarFuncion
+    */       
+            
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A STRING:e PARENTESIS_C
-            {: fin=fin+"console.log("+e+");"; System.out.print(e):}
+            {: 
+                //fin=fin+"console.log("+e+");"; System.out.print(e);:}
 
         /*Errores*/
             | CONSOL error:e NUMIDSTR PARENTESIS_C
             | CONSOL PARENTESIS_A error:e PARENTESIS_C
             | CONSOL PARENTESIS_A NUMIDSTR error:e
 ;
-obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
-                    | elementos PARENTESIS_A STRING PARENTESIS_C
+crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
+                        {:
+                            if(v.equals("docCreateElem")){
+                                String x4="";
+                                String[] x= e.toString().split("\"");
+                                String[] x2 = attrElem2.toString().split(",");
+                                String[] x3 = attrElem.toString().split(",");
+                                for(int i=0; i<x3.length;i++){
+                                    x4=x4+x3[i]+"='"+x2[i]+"' ";
+                                }
+                                fin=fin+"<"+x[1]+" "+x4+">"+vText+"</"+x[1]+">\n";
+                                if(varFor.equals("true")){
+                                    forElem=forElem+"<"+x[1]+" "+x4+">"+vText+"</"+x[1]+">\n";
+                                }
+                                attrElem="";
+                                attrElem2="";
+                            }
+                        :}
+                    | elementos2 PARENTESIS_A STRING:e PARENTESIS_C
+                        {:
+                            if(v.equals("docCreateElem")){
+                                String[] x= e.toString().split("\"");
+                                fin=fin+"<"+x[1]+"></"+x[1]+">\n";
+                            }
+                        :}
+                    /*Errores*/
+                    | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
+                    | elementos2 error:e STRING PARENTESIS_C PUNTO funciones
+                    | elementos2 PARENTESIS_A error:e PARENTESIS_C PUNTO funciones
+                    | elementos2 PARENTESIS_A STRING error:e PUNTO funciones
+                    | elementos2 PARENTESIS_A STRING PARENTESIS_C error:e funciones
+                    | elementos2 PARENTESIS_A STRING PARENTESIS_C PUNTO error:e
+                    | elementos2 error:e STRING PARENTESIS_C
+                    | elementos2 PARENTESIS_A error:e PARENTESIS_C
+                    | elementos2 PARENTESIS_A STRING error:e
+;
+obtenerElemento::= elementos PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
+
+                    | elementos PARENTESIS_A STRING:e PARENTESIS_C
+
 
                 /*Errores*/
                     | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
@@ -220,15 +292,37 @@ obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                     | elementos PARENTESIS_A STRING error:e
 ;
 elementos::= docGetElemID
-
             | docGetElemClass
-            | docCreateElem
-              {:fin=fin+"<ELEM > </ELEM>";:}
+;
+elementos2::= docCreateElem
+              {:v="docCreateElem";:}
 ;
 
-
-funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
-            | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
+funciones::=funciones3 PARENTESIS_A STRING:e PARENTESIS_C
+            {:
+                if(v3.equals("ChildText")){
+                    vText=e.toString();
+                }
+            :}
+                
+            | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C
+                {:
+                    if(v2.equals("setHTML")){
+                    String[] x= e2.toString().split("\"");
+                    String[] x2= e1.toString().split("\"");
+                    attrElem=attrElem+x2[1]+",";
+                    attrElem2=attrElem2+x[1]+",";
+                    }
+                :}
+            | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C PUNTO funciones
+                {:  
+                    if(v2.equals("setHTML")){
+                    String[] x= e2.toString().split("\"");
+                    String[] x2= e1.toString().split("\"");
+                    attrElem=attrElem+x2[1]+",";
+                    attrElem2=attrElem2+x[1]+","; 
+                    }
+                :}
             | funciones4 PARENTESIS_A PARENTESIS_C
 
         /*Errores*/
@@ -248,8 +342,9 @@ funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
             | funciones4 error:e PARENTESIS_C
             | funciones4 PARENTESIS_A error:e
 ;
-funciones2::= setHTML | optSelect;
-funciones3::= ChildText | Child | beforeChild | getAtt | RChild | AClass | RClass | Remove
+funciones2::= setHTML {:v2="setHTML";:}| optSelect;
+funciones3::= ChildText {:v3="ChildText";:} | Child {:v3="Child";:} | beforeChild {:v3="beforeChild";:} | getAtt {:v3="getAtt";:} 
+            | RChild {:v3="RChild";:} | AClass {:v3="AClass";:} | RClass {:v3="RClass";:} | Remove {:v3="Remove";:}
 
 ;
 funciones4::=inHTML;
@@ -261,8 +356,17 @@ llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                     | ID PARENTESIS_A error:e PARENTESIS_C
                     | ID PARENTESIS_A parametros error:e
 ;
-lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-
+lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:
+                String[] x=e.toString().split("\"");
+                String[] x2 = listaElem.toString().split(",");
+                String x3="";
+                for(int i=0; i<x2.length;i++){
+                    String[] x4=x2[i].split("\"");
+                    x3=x3+"\n<li>"+x4[1]+"<li>";
+                }
+                fin=fin+"<ul>"+x3+"\n</ul>\n";
+            :}
         /*Errores*/
             | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
@@ -293,13 +397,18 @@ tabla::= TABLE PARENTESIS_A PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla error:e PARENTESIS_C
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C error:e
 ;
-cuerpoTabla::= STRING | STRING COMA cuerpoTabla
+cuerpoTabla::= STRING:e
+                {:listaElem=listaElem+e.toString()+",";:}
+                | STRING:e COMA cuerpoTabla
+                {:listaElem=listaElem+e.toString()+",";:}
             /*Errores*/
                 | error:e
                 | STRING error:e
 ;
-divElem::= DIV LLAVE_A cuerpo LLAVE_C
-           | DIV LLAVE_A LLAVE_C
+
+divElem::= DIV ID:e LLAVE_A cuerpo LLAVE_C
+            {:fin="<div id='"+e.toString()+"'>\n"+fin+"</div>\n";:}
+           | DIV ID LLAVE_A LLAVE_C
 ;
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
@@ -315,8 +424,41 @@ sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
  /* For *///---------------------------------->
 /*******/
 
-sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C 
+                {: 
+                        if(expForAsig.equals("<")){
+                            if(expForOper.equals("++")){
+                                String x ="";
+                                for(int i=Integer.parseInt(expFor1);i<(Integer.parseInt(expFor2)-1);i++){
+                                    //System.out.print("Prueba-");
+                                    x=x+forElem;
+                                }
+                                fin=fin+x;
+                            }else if(expForOper.equals("--")){
+                                 for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i--){
+
+                                  }
+                            }   
+                            
+                        }
+                        
+                     :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C 
+                   {: 
+                        if(expForAsig.equals("<")){
+                            if(expForOper.equals("++")){
+                                for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i++){
+                                    fin=fin+"for";
+                                }
+                            }else if(expForOper.equals("--")){
+                                 for(int i=Integer.parseInt(expFor1);i<Integer.parseInt(expFor2);i--){
+
+                                  }
+                            }   
+                            
+                        }
+                        
+                     :}
 
             /*Errores*/
                 | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
@@ -343,8 +485,9 @@ condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
                     | expFor1 PUNTOCOMA expFor2:e expFor3
 ;
 
-expFor1 ::=   VAR ID ASIGNACION NUMERO
-
+expFor1 ::=   VAR ID ASIGNACION:e1 NUMERO:e
+                {:expFor1=e.toString();
+                   varFor="true";:}
         /*Errores*/
             | VAR error:e ASIGNACION  NUMERO
             | VAR ID error:e NUMERO
@@ -352,19 +495,22 @@ expFor1 ::=   VAR ID ASIGNACION NUMERO
 ;
 
 expFor2 ::= NUMID comparador NUMID
-
+            
         /*Errores*/
             | NUMID:e
 ;
 
-expFor3 ::= ID OPERCREMENTO
-            | ID OPERDECREMENTO
-
+expFor3 ::= ID:e OPERCREMENTO:o
+            {:expFor3=e.toString();
+              expForOper=o.toString();:}
+            | ID:e OPERDECREMENTO:o
+            {:expFor3=e.toString();
+              expForOper=o.toString();:}
         /*Errores*/
             | error:e OPERDECREMENTO
             | ID error:e
 ;
-NUMID::= ID | NUMERO
+NUMID::= ID:e {:expFor2=e.toString();:}| NUMERO:e {:expFor2=e.toString();:}
 
     /*Errores*/
         | NUMERO:e INVNUMERO
@@ -408,13 +554,13 @@ NUMIDSTR ::= NUMERO | ID | STRING
 compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
 ;
 
-comparador ::= MAYORQUE
-              | MAYORIGUAL
-              | MENORQUE
-              | MENORIGUAL
-              | IGUAL
-              | IGUAL2
-              | DIFERENTE
+comparador ::= MAYORQUE:e{:expForAsig=e.toString();:}
+              | MAYORIGUAL:e{:expForAsig=e.toString();:}
+              | MENORQUE:e{:expForAsig=e.toString();:}
+              | MENORIGUAL:e{:expForAsig=e.toString();:}
+              | IGUAL:e{:expForAsig=e.toString();:}
+              | IGUAL2:e{:expForAsig=e.toString();:}
+              | DIFERENTE:e{:expForAsig=e.toString();:}
 
 ;
 

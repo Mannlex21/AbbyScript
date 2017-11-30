@@ -193,6 +193,22 @@ static String codigointer = "";
     }
     //AQUI SE EJECUTA EL ANALISIS
     private void run() throws IOException, Exception {
+        CUP$CupObjeto$actions.attrElem="";
+        CUP$CupObjeto$actions.attrElem2="";
+        CUP$CupObjeto$actions.v="";
+        CUP$CupObjeto$actions.fin="";
+        CUP$CupObjeto$actions.v2="";
+        CUP$CupObjeto$actions.v3="";
+        CUP$CupObjeto$actions.vText="";
+        CUP$CupObjeto$actions.listaElem="";
+        CUP$CupObjeto$actions.expFor1="";
+        CUP$CupObjeto$actions.expFor2="";
+        CUP$CupObjeto$actions.expFor3="";
+        CUP$CupObjeto$actions.expForOper="";
+        CUP$CupObjeto$actions.expForAsig="";
+        CUP$CupObjeto$actions.forElem="";
+        CUP$CupObjeto$actions.varFor="";
+                
         txtPane.setText("");
         DefaultTableModel modelo = (DefaultTableModel) tblDatos.getModel();
         for (int i = 0; i < tblDatos.getRowCount(); i++) {

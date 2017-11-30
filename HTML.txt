@@ -1,0 +1,5 @@
+MAIN index {
+	HTML {
+		docCreateElem("p").setHTML("Class","clase")
+	}
+}

@@ -1,22 +1,11 @@
 MAIN index {
 	HTML {
-		VAR x = 1;
-		VAR y = 2;
-		VAR e = x;
-		FOR(VAR i =0;i<10;i++){
-			docCreateElem("p").setHTML("Class","clase")
-			docGetElemID("").Child("")
-			TABLE("",[""],[""],["",""])
+docCreateElem("p").setHTML("Class","clase1111111111111111111")
+docCreateElem("p").setHTML("Class","clase2222222222222222222")
+		FOR(VAR I=0;I<3;I++){
+			docCreateElem("p").setHTML("Class","clase1")
+			docCreateElem("p").setHTML("Class","clase2")
 		}
+		docCreateElem("p").setHTML("Class","clase")
 	}
-	JS index {
-		nombre()
-		FUNCTION nombre(){
-			CONSOL(2)
-		}
-	}
-	CSS(".clase",[
-		"background":"red",
-		"color":"white"
-	])
 }
