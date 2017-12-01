@@ -7,7 +7,8 @@ MAIN index {
 							docCreateElem("p").setHTML("Class","clase").ChildText("Texto")
 							docCreateElem("input").setHTML("type","text")
 						}
-					 	docCreateElem("input").setHTML("type","submit").setHTML("value","Boton1")
+docCreateElem("button").setHTML("value","Boton1").ChildText("Boton")
+					 	
 		}
 	}
 	JS E {
@@ -17,11 +18,11 @@ MAIN index {
 
 	}
 	CSS(".clase",[
-		"background":"red1",
-		"background":"red2"
+		"color":"red",
+		"background":"blue"
 	])
 	CSS(".clase2",[
-			"background":"red3",
-			"background":"red4"
+			"background":"yellow",
+			"background":"green"
 		])
 }

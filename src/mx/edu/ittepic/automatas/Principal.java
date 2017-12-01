@@ -293,23 +293,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
             parser.ManejadorDeErrores.clear();
             
         }else{
-            String x= "<!DOCTYPE html><html><head><title>Index</title><script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
-                    + "<link rel='stylesheet' type='text/css' href='css/index.css'><script type='text/javascript' src='js/index.js'></script></head><body>"
-                    +codigointer+ "</body></html>";
-            String x2 = "$(document).ready(function () {"+codigointerJs+"});";
-            String x3 = codigointerCss;
             
-            Path currentRelativePath = Paths.get("");
-            String locacion=currentRelativePath.toAbsolutePath().toString()+ File.separator+"EjemploPagina";
-            File directorio1 = new File(locacion+File.separator);
-            directorio1.mkdirs();
-            File directorio = new File(locacion+File.separator+"css");
-            File directorio2 = new File(locacion+File.separator+"js");
-            directorio.mkdirs();
-            directorio2.mkdirs();
-            guardar(x2,locacion+File.separator+"js"+File.separator+"index.js");
-            guardar(x3,locacion+File.separator+"css"+File.separator+"index.css");
-            guardar(x,locacion+File.separator+"index.html");
             //System.out.print(x);
                 //System.out.print(codigointerJs);
                 //System.out.print(codigointerCss);
@@ -916,7 +900,32 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
     }//GEN-LAST:event_comMouseEntered
 
     private void comActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comActionPerformed
-        // TODO add your handling code here:
+       if (manejadorErrores.isEmpty()) {
+            
+            String x= "<!DOCTYPE html><html><head><title>Index</title><script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' type='text/css' href='css/index.css'><script type='text/javascript' src='js/index.js'></script></head><body>"
+                    +codigointer+ "</body></html>";
+            String x2 = "$(document).ready(function () {"+codigointerJs+"});";
+            String x3 = codigointerCss;
+            
+            Path currentRelativePath = Paths.get("");
+            String locacion=currentRelativePath.toAbsolutePath().toString()+ File.separator+"EjemploPagina";
+            File directorio1 = new File(locacion+File.separator);
+            directorio1.mkdirs();
+            File directorio = new File(locacion+File.separator+"css");
+            File directorio2 = new File(locacion+File.separator+"js");
+            directorio.mkdirs();
+            directorio2.mkdirs();
+            guardar(x2,locacion+File.separator+"js"+File.separator+"index.js");
+            guardar(x3,locacion+File.separator+"css"+File.separator+"index.css");
+            guardar(x,locacion+File.separator+"index.html");
+            txtPane.setText("");
+            appendToPane(txtPane, "¡Se construyó el proyecto con exito!", Color.BLUE);
+            //System.out.print(x);
+                //System.out.print(codigointerJs);
+                //System.out.print(codigointerCss);
+            //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+        }
     }//GEN-LAST:event_comActionPerformed
 
     private void openMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_openMouseExited

@@ -141,11 +141,15 @@ sentenciaCSS ::= CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C
 cadena::= STRING:e {:String[] x=e.toString().split("\"");varCssCadena=x[1];:}| ID:e {:varCssCadena=e.toString();:};
 condicionCSS ::= STRING:e DOSPUNTOS STRING:e2
                     {:  
-                        varCss1=varCss1+e.toString()+":"+e2.toString()+";\n";
+                        String[] x=e.toString().split("\"");
+                        String[] x2=e2.toString().split("\"");
+                        varCss1=varCss1+x[1]+":"+x2[1]+";\n";
                     :}
                 | STRING:e DOSPUNTOS STRING:e2 COMA condicionCSS
                     {:  
-                        varCss1=varCss1+e.toString()+":"+e2.toString()+";\n";
+                        String[] x=e.toString().split("\"");
+                        String[] x2=e2.toString().split("\"");
+                        varCss1=varCss1+x[1]+":"+x2[1]+";\n";
                     :}
 ;
 condicionCSS2 ::= COMA STRING DOSPUNTOS NI
@@ -216,7 +220,7 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                                 String[] x= e.toString().split("\"");
                                 String[] x2 = attrElem2.toString().split(",");
                                 String[] x3 = attrElem.toString().split(",");
-                                String[] x5=vText.split("\"");
+                                String[] x5=  vText.split("\"");
                                 for(int i=0; i<x3.length;i++){
                                     x4=x4+x3[i]+"='"+x2[i]+"' ";
                                 }
@@ -231,6 +235,7 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                                 } */
                                 attrElem="";
                                 attrElem2="";
+                                
                             }
                         :}
                     | elementos2 PARENTESIS_A STRING:e PARENTESIS_C
