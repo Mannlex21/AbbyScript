@@ -4,11 +4,11 @@ import java.io.FileReader;
 import java.util.*;
 
 action code{:
-    static String fin="",finJs="";
-    static String v="",v2="",v3="", vText="",jsText="";
+    static String fin="",finJs="",finFun="",finCss="";
+    static String v="",v2="",v3="",v4="",v5="", vText="",jsText="";
     static String attrElem="",attrElem2="", listaElem="";
     static String expFor1="",expFor2="",expFor3="",expForOper="",expForAsig="",forElem="", varFor="",
-                    varExpFor1=""; 
+                    varExpFor1="",varCssCadena="",varCss1="",varCss2=""; 
     :};
 
 parser code {:
@@ -83,7 +83,7 @@ terminal Integer NUMERO;*/
 //DECLACACION DE NO TERMINALES
 non terminal inicio, sentenciaDeclare, asignarVariable, comparador, cuerpo, compuerta, funcion, parametros,
             sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
-            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,cuerpoLista,  consola,
+            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2,parametros3, primeraSentencia, cadena, tabla, cuerpoTabla,cuerpoLista,  consola,
             obtenerElemento,crearElemento,elementos2,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem,
             cuerpoFor;
 non terminal sentenciaMain;
@@ -103,8 +103,8 @@ start with inicio;
 inicio ::=    sentenciaMain
                 {:
                     //fin=fin+"\n";
-                    Principal.codigointer="\nHTML INICIO\n"+fin+"HTML FIN\n";
-                    Principal.codigointerJs="\nJS INICIO\n"+finJs+"JS FIN\n";
+                    
+                    
                     :}
             | sentenciaMain sentenciaDeclare
 ;
@@ -114,12 +114,18 @@ sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
 
 ;
 primeraSentencia::= sentenciaHTML
+                    {:Principal.codigointer="\n"+fin+"\n";:}
                     | sentenciaHTML sentenciasInterior
+                    {:Principal.codigointer="\n"+fin+"\n";:}
 ;
 sentenciasInterior::=   sentenciaJS
-                        /*| sentenciaJS sentenciasInterior
+                        {:Principal.codigointerJs="\n"+finJs+"\n";:}
+                        | sentenciaJS sentenciasInterior
+                            {:Principal.codigointerJs="\n"+finJs+"\n";:}
                         | sentenciaCSS
-                        | sentenciaCSS sentenciasInterior*/
+                            {:Principal.codigointerCss="\n"+finCss+"\n";:}
+                        | sentenciaCSS sentenciasInterior
+                            {:Principal.codigointerCss="\n"+finCss+"\n";:}
 ;
 
 sentenciaHTML ::=
@@ -130,10 +136,17 @@ sentenciaHTML ::=
 sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
  ;
 sentenciaCSS ::= CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+                    {:finCss=finCss+varCssCadena+"{\n"+varCss1+"}\n";varCss1="";:}
 ;
-cadena::= STRING | ID;
-condicionCSS ::= STRING DOSPUNTOS NI
-                | STRING DOSPUNTOS NI condicionCSS2
+cadena::= STRING:e {:String[] x=e.toString().split("\"");varCssCadena=x[1];:}| ID:e {:varCssCadena=e.toString();:};
+condicionCSS ::= STRING:e DOSPUNTOS STRING:e2
+                    {:  
+                        varCss1=varCss1+e.toString()+":"+e2.toString()+";\n";
+                    :}
+                | STRING:e DOSPUNTOS STRING:e2 COMA condicionCSS
+                    {:  
+                        varCss1=varCss1+e.toString()+":"+e2.toString()+";\n";
+                    :}
 ;
 condicionCSS2 ::= COMA STRING DOSPUNTOS NI
                 | COMA STRING DOSPUNTOS NI condicionCSS2
@@ -160,9 +173,7 @@ cuerpo ::=   sentenciaFor
             | obtenerElemento
             | cuerpo obtenerElemento
             | llamarFuncion
-            | cuerpo llamarFuncion
-      
-            
+            | cuerpo llamarFuncion           
 ;
 cuerpoFor ::=   sentenciaFor
             | cuerpoFor sentenciaFor            
@@ -190,7 +201,12 @@ cuerpoFor ::=   sentenciaFor
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A STRING:e PARENTESIS_C
             {: 
-                finJs=finJs+"console.log("+e.toString()+");\n";
+                if(v5.equals("true")){
+                    finFun=finFun+"console.log("+e.toString()+");\n";
+                }else{
+                    System.out.println("Entro consol");
+                    finJs=finJs+"console.log("+e.toString()+");\n";
+                }
             :}
 ;
 crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
@@ -200,13 +216,19 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                                 String[] x= e.toString().split("\"");
                                 String[] x2 = attrElem2.toString().split(",");
                                 String[] x3 = attrElem.toString().split(",");
+                                String[] x5=vText.split("\"");
                                 for(int i=0; i<x3.length;i++){
                                     x4=x4+x3[i]+"='"+x2[i]+"' ";
                                 }
-                                fin=fin+"<"+x[1]+" "+x4+">"+vText+"</"+x[1]+">\n";
+                                fin=fin+"<"+x[1]+" "+x4+">"+x5[1]+"</"+x[1]+">\n";
                                 if(varFor.equals("true")){
-                                    forElem=forElem+"<"+x[1]+" "+x4+">"+vText+"</"+x[1]+">\n";
+                                    forElem=forElem+"<"+x[1]+" "+x4+">"+x5[1]+"</"+x[1]+">\n";
                                 }
+                                /*if(v5.equals("true")){
+                                    finFun=finFun+"document.createElement("+e.toString()+")"+jsText+"\n";
+                                }else{
+                                    finJs=finJs+"document.createElement("+e.toString()+")"+jsText+"\n";
+                                } */
                                 attrElem="";
                                 attrElem2="";
                             }
@@ -216,19 +238,34 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                             if(v.equals("docCreateElem")){
                                 String[] x= e.toString().split("\"");
                                 fin=fin+"<"+x[1]+"></"+x[1]+">\n";
+                                /*if(v5.equals("true")){
+                                    finFun=finFun+"document.createElement("+e.toString()+")\n";
+                                }else{
+                                    finJs=finJs+"document.createElement("+e.toString()+")\n";
+                                }*/
                             }
                         :}
 ;
 obtenerElemento::= elementos PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                     {:
                             if(v.equals("docGetElemID")){
-                               finJs=finJs+"document.getElementById("+e.toString()+")"+jsText+"\n";
+                                if(v5.equals("true")){
+                                    finFun=finFun+"document.getElementById("+e.toString()+")"+jsText+"\n";
+                                }else{
+                                    finJs=finJs+"document.getElementById("+e.toString()+")"+jsText+"\n";
+                                }   
+                               
                             }
                     :}
                     | elementos PARENTESIS_A STRING:e PARENTESIS_C
                         {:
                             if(v.equals("docGetElemID")){
-                               finJs=finJs+"document.getElementById("+e.toString()+");\n";
+                                if(v5.equals("true")){
+                                    finFun=finFun+"document.getElementById("+e.toString()+");\n";
+                                }else{
+                                    finJs=finJs+"document.getElementById("+e.toString()+");\n";
+                                }
+                               
                             }
                         :}
 ;
@@ -296,8 +333,14 @@ funciones3::= ChildText {:v3="ChildText";:} | Child {:v3="Child";:}  | getAtt {:
 
 ;
 funciones4::=inHTML {:v3="inHTML";:};
-llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
-                    | ID PARENTESIS_A PARENTESIS_C
+llamarFuncion::= ID:e PARENTESIS_A parametros PARENTESIS_C
+                    {:
+                        finJs=finJs+e.toString()+"("+v3+");\n";
+                    :}
+                    | ID:e PARENTESIS_A PARENTESIS_C
+                        {:
+                        finJs=finJs+e.toString()+"();\n";
+                    :}
 ;
 lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             {:
@@ -313,7 +356,29 @@ lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PAREN
 ;
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+           {:finJs=finJs+"<table></table>\n";:}
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA 
+            CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+            {:
+                String[] x = listaElem.split(",");
+                String x2="",x3="",x4="";
+                int r = ((x.length)/3);
+                int r2= r,r3=r*2;
+                for(int i=0;i<r;i++){
+                    x2=x2+"<th>"+x[i]+"</th>\n";
+                    x3=x3+"<th>"+x[r2]+"</th>\n";
+                    x4=x4+"<th>"+x[r3]+"</th>\n";
+                    r2++;r3++;
+                }
+                x2="<tr>\n"+x2+"</tr>\n";
+                x3="<tr>\n"+x3+"</tr>\n";
+                x4="<tr>\n"+x4+"</tr>\n";
+                if(v5.equals("true")){
+                    finFun=finFun+"<table>\n"+x2+x3+x4+"</table>\n";
+                }else{
+                    finJs=finJs+"<table>\n"+x2+x3+x4+"</table>\n";
+                }
+            :}
 ;
 cuerpoTabla::= STRING:e
                 {:listaElem=listaElem+e.toString()+",";:}
@@ -395,12 +460,19 @@ sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAV
                             }   
                             
                         }
-                        finJs=finJs+"FOR();\n";
+                        if(!varFor.equals("true")){
+                            finJs=finJs+"FOR(var "+varExpFor1+" = "+Integer.parseInt(expFor1)+";"+expFor2+" "+expForAsig+" "+expFor2+";"+varExpFor1+expForOper+"){"+forElem+"};\n";
+                        }
+                        
+                       
                      :}
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C 
                     {:System.out.println("entro");
                         String[] x= varExpFor1.split("");
-                       finJs=finJs+"FOR(var "+varExpFor1+" = "+Integer.parseInt(expFor1)+"){};\n";
+                        
+                        if(!varFor.equals("true")){
+                            finJs=finJs+"FOR(var "+varExpFor1+" = "+Integer.parseInt(expFor1)+";"+expFor2+" "+expForAsig+" "+expFor2+";"+varExpFor1+expForOper+"){};\n";
+                        }
                     :}
 ;
 
@@ -429,11 +501,26 @@ NUMID::= ID:e {:expFor2=e.toString();:}| NUMERO:e {:expFor2=e.toString();:}
   /*********************/
  /* Asignar Variable  *///---------------------------------->
 /*********************/
-asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
-                    {:fin=fin+"VAR ID =STRING; \n";:}
-                    | ID ASIGNACION NUMIDSTR PUNTOCOMA
+asignarVariable ::= VAR ID:e ASIGNACION NUMIDSTR PUNTOCOMA
+                    {:  
+System.out.println(v5);
+                        if(v5.equals("true")){
+                            finFun=finFun+"VAR "+e.toString()+" ="+v3+";\n";
+                        }else{
+                            finJs=finJs+"VAR "+e.toString()+" ="+v3+";\n";
+                        }
+                        
+                    :}
+                    | ID:e ASIGNACION NUMIDSTR PUNTOCOMA
+                    {:
+                        if(v5.equals("true")){
+                              finFun=finFun+e.toString()+" ="+v3+";\n";
+                          }else{
+                              finJs=finJs+e.toString()+" ="+v3+";\n";
+                          }
+                    :}
 ;
-NUMIDSTR ::= NUMERO | ID | STRING
+NUMIDSTR ::= NUMERO:e {:v3=e.toString();:} | ID:e {:v3=e.toString();:} | STRING:e {:v3=e.toString();:}
 ;
 
 compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
@@ -449,15 +536,30 @@ comparador ::= MAYORQUE:e{:expForAsig=e.toString();:}
 
 ;
 
-funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+funcion ::=   FUNCTION ID:e PARENTESIS_A parametros3 PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+                {:
+                    System.out.println("Entro func");
+                        finFun="function "+e.toString()+"("+v4.toString()+") {"+finFun+"}\n";
+                        finJs=finJs+"function "+e.toString()+"("+v4.toString()+") {"+finFun+"}\n";
+                   finFun="";v5="";
+                :}
             | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
             | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros3 PARENTESIS_C LLAVE_A LLAVE_C
 ;
 
-parametros ::=    ID
-                | ID parametros2
+parametros ::=    ID:e
+                    {:v3=e.toString();v4=e.toString();:}
+                | ID:e parametros2
+                    {:v3=e.toString()+",";v4=e.toString()+",";:}
 ;
-parametros2 ::= COMA ID
-                | COMA ID parametros
+parametros3 ::=    ID:e
+                    {:v4=e.toString(); v5="true";:}
+                | ID:e parametros2
+                    {:v4=e.toString()+",";v5="true";:}
+;
+parametros2 ::= COMA ID:e
+                {:v3=v3+e.toString();:}
+                | COMA ID:e parametros
+                    {:v3=v3+e.toString()+",";:}
 ;

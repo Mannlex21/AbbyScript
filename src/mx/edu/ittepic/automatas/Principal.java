@@ -7,6 +7,7 @@ package mx.edu.ittepic.automatas;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,7 +46,7 @@ public class Principal extends javax.swing.JFrame {
 DefaultStyledDocument doc;
 static ArrayList<String> listaErrores;
 ArrayList<Error1> manejadorErrores = new ArrayList<>();
-static String codigointer = "",codigointerJs = "";    
+static String codigointer = "",codigointerJs = "",codigointerCss = "";    
     
     /* !!!!! Cambio de color de texto mientras se escribe !!!!!*/
     
@@ -158,6 +161,15 @@ static String codigointer = "",codigointerJs = "";
         CUP$CupObjeto$actions.expForAsig="";
         CUP$CupObjeto$actions.forElem="";
         CUP$CupObjeto$actions.varFor="";
+        CUP$CupObjeto$actions.v4="";
+        CUP$CupObjeto$actions.v5="";
+        CUP$CupObjeto$actions.finCss="";
+        CUP$CupObjeto$actions.finJs="";
+        CUP$CupObjeto$actions.finFun="";
+        CUP$CupObjeto$actions.jsText="";
+        CUP$CupObjeto$actions.varExpFor1="";
+        CUP$CupObjeto$actions.varCss1="";
+        CUP$CupObjeto$actions.varCssCadena="";
                 
         txtPane.setText("");
         DefaultTableModel modelo = (DefaultTableModel) tblDatos.getModel();
@@ -187,8 +199,6 @@ static String codigointer = "",codigointerJs = "";
         System.out.println("Tamaño manejador errores: " + manejadorErrores.size());
         if (manejadorErrores.size() == 0) {
                 objetoCup();
-                System.out.print(codigointer);
-                System.out.print(codigointerJs);
         } else {
             Collections.sort(manejadorErrores, new Comparator<Error1>() { //Ordenamiento a partir de numero de linea
                 @Override
@@ -281,9 +291,52 @@ static String codigointer = "",codigointerJs = "";
         if (!parser.ManejadorDeErrores.isEmpty()) {
             manejadorErrores.addAll(parser.ManejadorDeErrores);
             parser.ManejadorDeErrores.clear();
+            
         }else{
-            appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+            String x= "<!DOCTYPE html><html><head><title>Index</title><script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' type='text/css' href='css/index.css'><script type='text/javascript' src='js/index.js'></script></head><body>"
+                    +codigointer+ "</body></html>";
+            String x2 = "$(document).ready(function () {"+codigointerJs+"});";
+            String x3 = codigointerCss;
+            
+            Path currentRelativePath = Paths.get("");
+            String locacion=currentRelativePath.toAbsolutePath().toString()+ File.separator+"EjemploPagina";
+            File directorio1 = new File(locacion+File.separator);
+            directorio1.mkdirs();
+            File directorio = new File(locacion+File.separator+"css");
+            File directorio2 = new File(locacion+File.separator+"js");
+            directorio.mkdirs();
+            directorio2.mkdirs();
+            guardar(x2,locacion+File.separator+"js"+File.separator+"index.js");
+            guardar(x3,locacion+File.separator+"css"+File.separator+"index.css");
+            guardar(x,locacion+File.separator+"index.html");
+            //System.out.print(x);
+                //System.out.print(codigointerJs);
+                //System.out.print(codigointerCss);
+            //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
+    }
+    private void guardar(String texto,String path){
+        BufferedWriter bw = null;
+		FileWriter fw = null;
+        try {
+			String content = "This is the content to write into file\n";
+			fw = new FileWriter(path);
+			bw = new BufferedWriter(fw);
+			bw.write(texto);
+			System.out.println("Done");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+				if (fw != null)
+					fw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
     }
     //AQUI AGREGA AL PANEL EL TEXTO EN COLOR
     private void appendToPane(JTextPane tp, String msg, Color c)
@@ -432,7 +485,7 @@ static String codigointer = "",codigointerJs = "";
                 compileActionPerformed(evt);
             }
         });
-        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 0, 70, 70));
+        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, 70, 70));
 
         auto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/grafo.png"))); // NOI18N
         auto.setToolTipText("Automata");
@@ -452,7 +505,7 @@ static String codigointer = "",codigointerJs = "";
                 autoActionPerformed(evt);
             }
         });
-        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 0, 70, 70));
+        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 70, 70));
 
         save.setBackground(null);
         save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar.png"))); // NOI18N
@@ -513,7 +566,7 @@ static String codigointer = "",codigointerJs = "";
                 comActionPerformed(evt);
             }
         });
-        getContentPane().add(com, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 0, 70, 70));
+        getContentPane().add(com, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 0, 70, 70));
 
         grama.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/abc.png"))); // NOI18N
         grama.setToolTipText("Gramatica");
@@ -532,7 +585,7 @@ static String codigointer = "",codigointerJs = "";
                 gramaActionPerformed(evt);
             }
         });
-        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 0, 70, 70));
+        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, -10, 70, 90));
 
         tblDatos.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         tblDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -557,7 +610,7 @@ static String codigointer = "",codigointerJs = "";
             tblDatos.getColumnModel().getColumn(2).setResizable(false);
         }
 
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 340, -1));
+        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 70, 340, 420));
 
         labelfondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/fondo2.png"))); // NOI18N
         getContentPane().add(labelfondo, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1140, 660));

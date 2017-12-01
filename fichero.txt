@@ -1,12 +1,28 @@
 MAIN index {
 	HTML {
-	FOR(VAR ID=0;I<3;I++){
-		docCreateElem("input").setHTML("Class","clase1")	
-	}	docCreateElem("input").setHTML("Class","clase").setHTML("id","c").ChildText("Hola")
+	                  DIV disv {	
+		      	docCreateElem("h1").setHTML("Class","clase").setHTML("id","titulo").ChildText("Titulo")
+docCreateElem("h1").setHTML("id","titulo2").ChildText("Titulo")
+		       FOR(VAR i=0; i<3;i++){
+			docCreateElem("p").setHTML("Class","clase").ChildText("Texto")
+			docCreateElem("input").setHTML("type","text")
+		       }
+			
+		       docCreateElem("input").setHTML("type","submit").setHTML("value","Boton1")
+		}
 	}
-
-	JS ID{
-		FOR(VAR ID=0;I<10;I++){}
+	JS E {
+		docGetElemID("titulo").setHTML("class",".personal")
+		docGetElemID("titulo2").getAtt("id")
+		CONSOL("Entro")
+			
 	}
-
+	CSS(".clase",[
+		"background":"red1",
+		"background":"red2"
+	])
+CSS(".clase2",[
+		"background":"red3",
+		"background":"red4"
+	])
 }
