@@ -3,7 +3,8 @@ package mx.edu.ittepic.automatas;
 import static mx.edu.ittepic.automatas.Token.*;
 import mx.edu.ittepic.automatas.Token;
 import java_cup.runtime.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
 %%
 %cupsym sym
 %cup
@@ -29,8 +30,8 @@ InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
 
 /* comments */
-OurComment = "<!--" [^*] ~"-->" | "<!---->" 
-comment = ">-" [^*] ~"!<" | ">- !<" 
+OurComment = "<!--" [^*] ~"-->" | "<!---->"
+comment = ">-" [^*] ~"!<" | ">- !<"
 
 
 
@@ -39,6 +40,7 @@ WHITE=[" "|\t\r\n]
 %{
     public String lexeme,componenteL;
     public int linea, columna;
+    ArrayList<Error1> manejadorErrores = new ArrayList<>();
     public Symbol token(int simbolo){
             Lexema lexema = new Lexema( yytext() );
             return new Symbol(simbolo,yyline+1,yycolumn,lexema);
@@ -143,6 +145,7 @@ WHITE=[" "|\t\r\n]
 "CONSOL"     {return token(sym.CONSOL, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"CONSOL");}
 "Child"     {return token(sym.Child, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"Child");}
 "ChildText"     {return token(sym.ChildText, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"ChildText");}
+"ChildTextH"     {return token(sym.ChildTextH, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"ChildTextH");}
 "RChild"     {return token(sym.RChild, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"RChild");}
 "beforeChild"     {return token(sym.beforeChild, linea=yyline+1,columna=yycolumn,lexeme=yytext(),"beforeChild");}
 
@@ -180,4 +183,5 @@ WHITE=[" "|\t\r\n]
 {L}({L}|{D})*                   {return token(sym.ID,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"IDENTIFICADOR");}
 \"[^\"\\]*\" {return token(sym.STRING,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"STRING");}
 
-.           {return token(sym.ERROR,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"ERROR");}
+.           {manejadorErrores.add( new Error1("ES",yyline,yycolumn,"Error lexico en la linea: "+(yyline+1)+", columna: "+(yycolumn+1)+".Simbolo '"+yytext()+"' inesperado")); 
+            return token(sym.ERROR,linea=yyline+1,columna=yycolumn,lexeme=yytext(),"ERROR");}

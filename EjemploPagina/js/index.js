@@ -1,10 +1,8 @@
 $(document).ready(function () {
-document.getElementById("titulo").appendChild(document.createTextNode("Texto"));
-
+VAR E ="QERG";
+document.getElementById("titulo")
 
 
 document.getElementById("titulo2").getAttribute("id");
-
-console.log("Entro");
 
 });

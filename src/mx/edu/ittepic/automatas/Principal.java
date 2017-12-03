@@ -19,6 +19,7 @@ import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
@@ -46,7 +47,10 @@ public class Principal extends javax.swing.JFrame {
 DefaultStyledDocument doc;
 static ArrayList<String> listaErrores;
 ArrayList<Error1> manejadorErrores = new ArrayList<>();
-static String codigointer = "",codigointerJs = "",codigointerCss = "";    
+ArrayList<Variables> ManejadorVariables = new ArrayList<>();
+static CupSemantico parserG;
+static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=""; 
+
     
     /* !!!!! Cambio de color de texto mientras se escribe !!!!!*/
     
@@ -170,6 +174,12 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         CUP$CupObjeto$actions.varExpFor1="";
         CUP$CupObjeto$actions.varCss1="";
         CUP$CupObjeto$actions.varCssCadena="";
+        
+        CUP$CupSemantico$actions.varNombre="";
+        CUP$CupSemantico$actions.varValor="";
+        CUP$CupSemantico$actions.varTipo="";
+        ManejadorVariables=new ArrayList<>();
+        manejadorErrores=new ArrayList<>();
                 
         txtPane.setText("");
         DefaultTableModel modelo = (DefaultTableModel) tblDatos.getModel();
@@ -198,7 +208,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         String log="";
         System.out.println("Tamaño manejador errores: " + manejadorErrores.size());
         if (manejadorErrores.size() == 0) {
-                objetoCup();
+                semanticoCup();
         } else {
             Collections.sort(manejadorErrores, new Comparator<Error1>() { //Ordenamiento a partir de numero de linea
                 @Override
@@ -217,7 +227,18 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
     public String mostrarManejadorErrores() {
         String errores = "";
         for (int i = 0; i <= manejadorErrores.size() - 1; i++) {
-            String error = (manejadorErrores.get(i).toString() + "\n");
+            String error = (manejadorErrores.get(i) + "\n");
+            if (!error.equals("\n")) {
+                errores += error;
+            }
+        }
+        return errores;
+    }
+    public String mostrarManejadorVariables() {
+        String errores = "";
+        for (int i = 0; i <= ManejadorVariables.size() - 1; i++) {
+            String error = ("Nombre: "+ManejadorVariables.get(i).nombre 
+                    +", Valor: "+ManejadorVariables.get(i).valor +", Tipo: "+ManejadorVariables.get(i).tipo + "\n");
             if (!error.equals("\n")) {
                 errores += error;
             }
@@ -242,6 +263,8 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
                     Object[] errid = {lexer.componenteL, lexer.lexeme, lexer.linea};
                     modelo.addRow(errid);
                     log = log+ "Error lexico de identificador:"+"Numero de linea:"+lexer.linea+". Identificador incorrecto: "+lexer.lexeme+"\n";
+                    //manejadorErrores.add(new Error1("ES",lexer.linea,lexer.columna,"Error lexico en la linea: "+(lexer.linea+1)+", columna: "+(lexer.columna+1)+".")); 
+                    break;
                 case sym.error:
                     log = log+"Error lexico. "+"Cadena: "+lexer.lexeme+"      Numero de linea:"+lexer.linea+" \n";
                     txtPane.setText(log);
@@ -262,6 +285,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         String codigo = textPane.getText();
         Lexer flex = new Lexer(new StringReader(codigo));
         Cup parser;
+        
         ArrayList<Error1> m = new ArrayList<Error1>();
         parser = new Cup(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
         try {
@@ -269,11 +293,12 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         } catch (Exception ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!parser.ManejadorDeErrores.isEmpty()) {
+        if (!parser.ManejadorDeErrores.isEmpty() || !flex.manejadorErrores.isEmpty()) {
+            manejadorErrores.addAll(flex.manejadorErrores);
             manejadorErrores.addAll(parser.ManejadorDeErrores);
             parser.ManejadorDeErrores.clear();
         }else{
-            appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+            //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
     }
     public void objetoCup() {
@@ -281,23 +306,47 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         Lexer flex = new Lexer(new StringReader(codigo));
         CupObjeto parser;
         ArrayList<Error1> m = new ArrayList<Error1>();
-        parser = new CupObjeto(flex, m, textPane.getDocument().getDefaultRootElement().getElementCount());
-        System.out.println(parser);
+        parser = new CupObjeto(flex,ManejadorVariables, m, textPane.getDocument().getDefaultRootElement().getElementCount());
         try {
             parser.parse();
         } catch (Exception ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (!parser.ManejadorDeErrores.isEmpty()) {
+        if (!parser.ManejadorDeErrores.isEmpty() ) {
             manejadorErrores.addAll(parser.ManejadorDeErrores);
             parser.ManejadorDeErrores.clear();
-            
         }else{
+            System.out.println(codigointer);
+            //System.out.println(codigointerJs);
+            //System.out.println(codigointerCss);
             
-            //System.out.print(x);
-                //System.out.print(codigointerJs);
-                //System.out.print(codigointerCss);
-            //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+            appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+        }
+    }
+    public void semanticoCup() {
+        String codigo = textPane.getText();
+        Lexer flex = new Lexer(new StringReader(codigo));
+        CupSemantico parser;
+        ArrayList<Variables> v = new ArrayList<Variables>();
+        ArrayList<Error1> m = new ArrayList<Error1>();
+        parser = new CupSemantico(flex,v, m, textPane.getDocument().getDefaultRootElement().getElementCount());
+        try {
+            parser.parse();
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+       
+        if (!parser.ManejadorDeErrores.isEmpty() ) {
+            manejadorErrores.addAll(parser.ManejadorDeErrores);
+            parser.ManejadorDeErrores.clear();
+            appendToPane(txtPane,mostrarManejadorErrores() , Color.RED);
+        }else{
+            ManejadorVariables.addAll(parser.ManejadorVariables);
+            parser.ManejadorVariables.clear();
+            String variables = mostrarManejadorVariables();
+            System.out.println(variables);
+            objetoCup(); 
         }
     }
     private void guardar(String texto,String path){
@@ -425,6 +474,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         textPane.setFont(new java.awt.Font("PT Mono", 0, 16)); // NOI18N
+        textPane.setText("MAIN index {\n\tHTML {\n\n\t           docCreateElem(\"h1\").setHTML(\"Class\",\"clase\").ChildTextH(\"Titulo\")\n                              docCreateElem(\"input\").setHTML(\"type\",\"button\").setHTML(\"value\",\"button\")\n\t            TABLE(\"\",[\"1\"],[\"2\"],[\"3\"])\n\t            LIST(\"0\",[\"1\",\"2\",\"3\"])\n\t\t\t\t\n\t}\n\tJS E {\n\t\tVAR E=\"QERG\";\n\t\tdocGetElemID(\"titulo\").setHTML(\"class\",\".personal\")\n\t\tdocGetElemID(\"titulo2\").getAtt(\"id\")\n\t\tCONSOL(\"Entro\")\n\n\t}\n\tCSS(\".clase\",[\n\t\t\"color\":\"red\",\n\t\t\"background\":\"blue\"\n\t])\n\tCSS(\".clase2\",[\n\t\t\t\"background\":\"yellow\",\n\t\t\t\"background\":\"green\"\n\t\t])\n}");
         textPane.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -457,11 +507,11 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         compile.setBorderPainted(false);
         compile.setContentAreaFilled(false);
         compile.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                compileMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 compileMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                compileMouseExited(evt);
             }
         });
         compile.addActionListener(new java.awt.event.ActionListener() {
@@ -538,11 +588,11 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
         com.setBorderPainted(false);
         com.setContentAreaFilled(false);
         com.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                comMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 comMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                comMouseExited(evt);
             }
         });
         com.addActionListener(new java.awt.event.ActionListener() {
@@ -902,9 +952,20 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "";
     private void comActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comActionPerformed
        if (manejadorErrores.isEmpty()) {
             
-            String x= "<!DOCTYPE html><html><head><title>Index</title><script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'><script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
-                    + "<link rel='stylesheet' type='text/css' href='css/index.css'><script type='text/javascript' src='js/index.js'></script></head><body>"
-                    +codigointer+ "</body></html>";
+            String x= "<!DOCTYPE html>"
+                    + "<html>"
+                    + "<head>"
+                    + "<title>Index</title>"
+                    + "<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'>"
+                    + "<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' type='text/css' href='css/index.css'>"
+                    + "<script type='text/javascript' src='js/index.js'></script>"
+                    + "</head>"
+                    + "<body>"
+                    +codigointer
+                    + "</body>"
+                    + "</html>";
             String x2 = "$(document).ready(function () {"+codigointerJs+"});";
             String x3 = codigointerCss;
             

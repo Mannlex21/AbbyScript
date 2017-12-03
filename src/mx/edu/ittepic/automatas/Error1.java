@@ -5,10 +5,7 @@
  */
 package mx.edu.ittepic.automatas;
 
-/**
- *
- * @author MARIELA
- */
+
 public class Error1 {
     
     String tipo,valor;

@@ -1,0 +1,321 @@
+package mx.edu.ittepic.automatas;
+import java_cup.runtime.*;
+import java.io.FileReader;
+import java.util.*;
+
+action code{:
+
+    static String varNombre="",varValor="",varTipo="";
+    :};
+parser code {:
+    boolean esId;
+    String tipoActual;
+    String salidaTipoActual;
+    Object valorActual;
+    String valorActualTipo;
+    String fil,col;
+    ArrayList<Error1> ManejadorDeErrores;
+    ArrayList<Variables> ManejadorVariables;
+    boolean esDAssig=false;
+
+    int fl;
+
+    public CupSemantico(java_cup.runtime.Scanner s,ArrayList<Variables> v,ArrayList<Error1> m,int tfl) {
+        super(s);
+        ManejadorDeErrores =m;
+        ManejadorVariables =v;
+        fl = tfl;
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{
+        report_error("No se encontró ;",s);
+
+    }
+
+    public void syntax_error(Symbol s){
+        //report_error("Sintactico",s);
+    }
+
+    public void report_error(String message, Object info){
+        if(info!=null){
+            java_cup.runtime.Symbol s =(java_cup.runtime.Symbol)info;
+            String valor="";
+            if(s.value!=null){
+                valor = s.value.toString();
+            }
+        ManejadorDeErrores.add(new Error1(message,s.left,s.right,valor));
+        }else{
+            ManejadorDeErrores.add(new Error1(message,-1,-1,"?????"));
+        }
+    }
+    /*public static void main(String[] args){
+        try {
+                Cup sintactico = new Cup(new Lexer(new FileReader(args[0])));
+            try{
+                Object result = sintactico.parse().value;
+            }catch(Exception ex){
+
+
+            }
+            System.out.println("\n*** Resultados finales ***");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }*/
+:};
+
+//DECLARACION DE TERMINALES
+terminal    COMENTARIO,LITERAL,ERROR,LOGIC,
+            CSS, HTML, VAR, MAIN,FUNCTION,IF,FOR,OBJECT,ARRAY,DECLARE,JS,CREATE,PAGE,FALSE,THIS,RETURN,ELSE,CATCH,TRY,
+            BREAK,MAPX,FORMATTER,DATE,NULL,NEW,TRUE,PARENTESIS_A,PARENTESIS_C,LLAVE_A,LLAVE_C,CORCHETE_A,CORCHETE_C,
+            GUIONBAJO,PUNTOCOMA,DOSPUNTOS,PUNTO,AND,ANDSIMPLE,OR,ORSIMPLE,NOT,XOR,MAYORQUE,MAYORIGUAL,MENORQUE,MENORIGUAL,IGUAL,IGUAL2,
+            DIFERENTE,SUMA,RESTA,MULTIPLICACION,DIVISION,ASIGNACION,ASIGNACIONINCRE,ASIGNACIONDECRE,ASIGNACIONMULT,ASIGNACIONDIV,OPERDECREMENTO,
+            OPERCREMENTO,ID,PACKAGE,STRING,NUMERO, COMA, EN, WHILE, fileName, PrintCon, getAtt, JQDocReady, docGetElemID,docGetElemClass, docGetElemTag,
+            docCreateElemTag, docCreateElem, docOn, Remove, JQElem, CONSOL, Child, ChildText,ChildTextH, RChild, beforeChild, Value, Val, makeTable, setHTML,
+            HG, WD, inHTML,outHTML, css, getBody, getDate, getDay,getYear, getHour, getMSecond, getMinute, getMonth, getSecond, div, hvr, AClass, RClass,
+            COMILLA_SIMPLE, INVNUMERO, TABLE, DIV, optSelect, LIST
+            ;
+
+/*terminal String ID,STRING;
+terminal Integer NUMERO;*/
+
+//DECLACACION DE NO TERMINALES
+non terminal inicio, sentenciaMain, sentenciaDeclare, asignarVariable, comparador, cuerpo,cuerpo2, compuerta, funcion, parametros,
+            sentenciaJS, condicionFor, sentenciaFor, expFor1,expFor2,expFor3,sentenciasInterior, sentenciaHTML, sentenciaCSS,
+            condicionCSS, NUMID,NUMIDSTR,NI, condicionCSS2, parametros2, primeraSentencia, cadena, tabla, cuerpoTabla,cuerpoLista,  consola,
+            obtenerElemento,crearElemento,elementos2,llamarFuncion, funciones, funciones2,funciones3, funciones4, lista, elementos, divElem;
+
+precedence right PARENTESIS_A, PARENTESIS_C;
+precedence right LLAVE_A, LLAVE_C;
+precedence right CORCHETE_A, CORCHETE_C;
+precedence right ID,STRING;
+
+
+
+
+
+start with inicio;
+
+///////////////////////////////INICIO///////////////////////////////////
+
+
+inicio ::=    sentenciaMain
+            | sentenciaMain sentenciaDeclare
+;
+
+sentenciaMain ::=   MAIN ID LLAVE_A primeraSentencia LLAVE_C
+;
+primeraSentencia::= sentenciaHTML
+                    | sentenciaHTML sentenciasInterior
+;
+sentenciasInterior::=   sentenciaJS
+                        | sentenciaJS sentenciasInterior
+                        | sentenciaCSS
+                        | sentenciaCSS sentenciasInterior
+;
+
+sentenciaHTML ::=HTML LLAVE_A cuerpo2 LLAVE_C
+                    | HTML LLAVE_A LLAVE_C
+;
+sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
+;
+sentenciaCSS ::= CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
+;
+cadena::= STRING | ID;
+condicionCSS ::= STRING DOSPUNTOS NI
+                | STRING DOSPUNTOS NI condicionCSS2
+;
+condicionCSS2 ::= COMA STRING DOSPUNTOS NI
+                | COMA STRING DOSPUNTOS NI condicionCSS2
+;
+NI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO
+;
+cuerpo2::=crearElemento
+            | cuerpo2 crearElemento
+            | tabla
+            | cuerpo2 tabla
+            | divElem
+            | cuerpo2 divElem
+            | lista
+            | cuerpo2 lista
+
+;
+cuerpo ::=   sentenciaFor
+            | cuerpo sentenciaFor
+            | asignarVariable
+            | cuerpo asignarVariable
+            | funcion
+            | cuerpo funcion
+            | consola
+            | cuerpo consola
+            | obtenerElemento
+            | cuerpo obtenerElemento
+            | llamarFuncion
+            | cuerpo llamarFuncion
+;
+/*--------------------------------------------------------------*/
+consola::= CONSOL PARENTESIS_A NUMIDSTR:e PARENTESIS_C
+            {:
+                  if(varTipo.equals("ID")){
+                      int r=0;
+                    for (int i = 0; i <= parser.ManejadorVariables.size() - 1; i++) {
+                         String variableNombre = parser.ManejadorVariables.get(i).nombre;
+                         if(varValor.equals(variableNombre)){
+                             r++;
+                         }
+                     }
+                    if(r==0){
+                        parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" No se ha declarado la variable '"+varValor+"'"));
+                    }
+                  }
+
+            :}
+;
+crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
+                    | elementos2 PARENTESIS_A STRING:e PARENTESIS_C
+;
+obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
+                    | elementos PARENTESIS_A STRING PARENTESIS_C
+;
+elementos::= docGetElemID
+            | docGetElemClass
+;
+elementos2::= docCreateElem
+;
+funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
+            | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C PUNTO funciones
+            | funciones4 PARENTESIS_A PARENTESIS_C
+;
+funciones2::= setHTML | optSelect | beforeChild ;
+funciones3::= ChildText | Child | getAtt | RChild | AClass | RClass | Remove | ChildTextH
+
+;
+funciones4::=inHTML;
+llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
+                    | ID PARENTESIS_A PARENTESIS_C
+;
+lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+;
+
+tabla::= TABLE PARENTESIS_A PARENTESIS_C
+        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+;
+cuerpoTabla::= STRING | STRING COMA cuerpoTabla
+;
+divElem::= DIV ID LLAVE_A cuerpo2 LLAVE_C
+            | DIV ID LLAVE_A LLAVE_C
+;
+/*--------------------------------------------------------------*/
+sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
+                    | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
+ ;
+
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
+;
+
+condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
+;
+
+expFor1 ::=   VAR ID ASIGNACION NUMERO
+;
+
+expFor2 ::= NUMID comparador NUMID
+;
+
+expFor3 ::= ID OPERCREMENTO
+            | ID OPERDECREMENTO
+;
+NUMID::= ID | NUMERO
+;
+  /*********************/
+ /* Asignar Variable  *///---------------------------------->
+/*********************/
+asignarVariable ::= VAR ID:e ASIGNACION NUMIDSTR PUNTOCOMA
+                      {:
+                        if(parser.ManejadorVariables.isEmpty()){
+                          parser.ManejadorVariables.add(new Variables(e.toString(), varValor, varTipo));
+                        }else{
+                          for (int i = 0; i <= parser.ManejadorVariables.size() - 1; i++) {
+                               String variableNombre = parser.ManejadorVariables.get(i).nombre;
+                               if(!e.toString().equals(variableNombre)){
+                                  parser.ManejadorVariables.add(new Variables(e.toString(), varValor, varTipo));
+                               }else{
+                                  parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Ya existe una variable con el nombre '"+e.toString()+"'"));
+                               }
+                           }
+                        }
+                      :}
+                    | ID:e ASIGNACION NUMIDSTR PUNTOCOMA
+                        {:
+                            for (int i = 0; i <= parser.ManejadorVariables.size() - 1; i++) {
+                                 String variableNombre = parser.ManejadorVariables.get(i).nombre;
+                                 if(e.toString().equals(variableNombre)){
+                                    parser.ManejadorVariables.set(i,new Variables(e.toString(), varValor, varTipo));
+                                 }
+                             }
+                        :}
+                    | VAR ID:e NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '='."));:}
+                    | VAR ID ASIGNACION:e PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" No se asigno un valor a la variable."));:}
+                    | VAR:e ASIGNACION NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID."));:}
+                    | VAR ID:e PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '=."));:}
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING', 'ID' O 'NUMERO'."));:}
+
+                    | ID:e NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '='."));:}
+                    | ID ASIGNACION:e PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" No se asigno un valor a la variable."));:}
+                    | ASIGNACION:e NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID."));:}
+
+                    | VAR error:e ASIGNACION NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
+                    | VAR ID error:e NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un  '='."));:}
+                    | VAR ID ASIGNACION error:e PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING', 'ID' O 'NUMERO'."));:}
+                    | VAR ID ASIGNACION NUMIDSTR error:e
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
+
+
+                    | ID error:e ASIGNACION NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un  '='."));:}
+                    | ID ASIGNACION error:e PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'STRING', 'ID' O 'NUMERO'."));:}
+                    | ID ASIGNACION NUMIDSTR error:e
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ';'."));:}
+                    | ID error:e NUMIDSTR PUNTOCOMA
+                        {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '=' ."));:}
+
+;
+NUMIDSTR ::= NUMERO:e {:varValor=e.toString();varTipo="NUMERO";:} | ID:e {:varValor=e.toString();varTipo="ID";:} | STRING:e {:varValor=e.toString();varTipo="STRING";:}
+;
+
+compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
+;
+
+comparador ::= MAYORQUE
+              | MAYORIGUAL
+              | MENORQUE
+              | MENORIGUAL
+              | IGUAL
+              | IGUAL2
+              | DIFERENTE
+;
+
+funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+;
+
+parametros ::=    ID
+                | ID parametros2
+;
+parametros2 ::= COMA ID
+                | COMA ID parametros
+;

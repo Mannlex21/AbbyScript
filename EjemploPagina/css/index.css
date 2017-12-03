@@ -1,10 +1,9 @@
 
 .clase{
-"background":"red2";
-"background":"red1";
+background:blue;
+color:red;
 }
 .clase2{
-"background":"red4";
-"background":"red3";
+background:green;
+background:yellow;
 }
-

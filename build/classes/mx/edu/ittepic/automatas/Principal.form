@@ -269,6 +269,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="PT Mono" size="16" style="0"/>
             </Property>
+            <Property name="text" type="java.lang.String" value="MAIN index {&#xa;&#x9;HTML {&#xa;&#xa;&#x9;           docCreateElem(&quot;h1&quot;).setHTML(&quot;Class&quot;,&quot;clase&quot;).ChildTextH(&quot;Titulo&quot;)&#xa;                              docCreateElem(&quot;input&quot;).setHTML(&quot;type&quot;,&quot;button&quot;).setHTML(&quot;value&quot;,&quot;button&quot;)&#xa;&#x9;            TABLE(&quot;&quot;,[&quot;1&quot;],[&quot;2&quot;],[&quot;3&quot;])&#xa;&#x9;            LIST(&quot;0&quot;,[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;])&#xa;&#x9;&#x9;&#x9;&#x9;&#xa;&#x9;}&#xa;&#x9;JS E {&#xa;&#x9;&#x9;VAR E=&quot;QERG&quot;;&#xa;&#x9;&#x9;docGetElemID(&quot;titulo&quot;).setHTML(&quot;class&quot;,&quot;.personal&quot;)&#xa;&#x9;&#x9;docGetElemID(&quot;titulo2&quot;).getAtt(&quot;id&quot;)&#xa;&#x9;&#x9;CONSOL(&quot;Entro&quot;)&#xa;&#xa;&#x9;}&#xa;&#x9;CSS(&quot;.clase&quot;,[&#xa;&#x9;&#x9;&quot;color&quot;:&quot;red&quot;,&#xa;&#x9;&#x9;&quot;background&quot;:&quot;blue&quot;&#xa;&#x9;])&#xa;&#x9;CSS(&quot;.clase2&quot;,[&#xa;&#x9;&#x9;&#x9;&quot;background&quot;:&quot;yellow&quot;,&#xa;&#x9;&#x9;&#x9;&quot;background&quot;:&quot;green&quot;&#xa;&#x9;&#x9;])&#xa;}"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
               <Color id="Cursor de Texto"/>
             </Property>
@@ -334,8 +335,8 @@
         <Property name="contentAreaFilled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="compileMouseExited"/>
         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="compileMouseEntered"/>
+        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="compileMouseExited"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="compileActionPerformed"/>
       </Events>
       <Constraints>
@@ -437,8 +438,8 @@
         <Property name="contentAreaFilled" type="boolean" value="false"/>
       </Properties>
       <Events>
-        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="comMouseExited"/>
         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="comMouseEntered"/>
+        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="comMouseExited"/>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="comActionPerformed"/>
       </Events>
       <Constraints>

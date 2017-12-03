@@ -30,10 +30,10 @@ public class Main {
         boolean RedirigidoCup = redirigir("Cup.java");
         boolean RedirigidoSym= redirigir("sym.java");
         if(RedirigidoCup && RedirigidoSym){
-            String filePath = new File("").getAbsolutePath(); 
-            String cupErrores = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
-        +File.separator+"automatas"+File.separator+"CupObjeto.cup";
-        generarCupObjeto(cupErrores);
+            String filePath = new File("").getAbsolutePath();
+            String cupSemantico = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
+            +File.separator+"automatas"+File.separator+"CupSemantico.cup";
+            generarCupSemantico(cupSemantico);
             System.exit(0);
         }else System.err.println("Falló generar Cup");
      }
@@ -43,6 +43,19 @@ public class Main {
         boolean RedirigidoCup = redirigir("CupObjeto.java");
         boolean RedirigidoSym= redirigir("sym.java");
         if(RedirigidoCup && RedirigidoSym){
+            System.exit(0);
+        }else System.err.println("Falló generar Cup");
+     }
+    public static void generarCupSemantico(String cup) throws IOException, Exception{        
+        String[] archivoCup={"-parser","CupSemantico",cup};
+        java_cup.Main.main(archivoCup);
+        boolean RedirigidoCup = redirigir("CupSemantico.java");
+        boolean RedirigidoSym= redirigir("sym.java");
+        if(RedirigidoCup && RedirigidoSym){
+            String filePath = new File("").getAbsolutePath();
+            String cupErrores = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
+            +File.separator+"automatas"+File.separator+"CupObjeto.cup";
+            generarCupObjeto(cupErrores);
             System.exit(0);
         }else System.err.println("Falló generar Cup");
      }
