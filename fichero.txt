@@ -1,25 +1,46 @@
 MAIN index {
 	HTML {
-
-	           docCreateElem("h1").setHTML("Class","clase").ChildTextH("Titulo")
-                              docCreateElem("input").setHTML("type","button")
-.setHTML("value","button")	            TABLE("",["1"],["2"],["3"])
-	            LIST("0",["1","2","3"])
-				
+	               DIV div1{
+	                       docCreateElem("h1").setHTML("Class","h1").ChildTextH("Titulo de ejemplo")
+ 	               }
+	              FOR(VAR I=0;I<2;I++){
+	                     docCreateElem("label").setHTML("Class","col-md-4 clase").ChildTextH("Etiqueta")
+	                     docCreateElem("input").setHTML("type","text").setHTML("Class","form-control col-md-4 clase")
+	              }
+                                           docCreateElem("button").setHTML("value","button").setHTML("Class","btn btn-default clase2").ChildTextH("Aceptar")
+ 	             docCreateElem("button").setHTML("value","button").setHTML("Class","btn btn-danger clase2").ChildTextH("Cancelar")
+	 
+           	             TABLE("idTabla",["Columna1","Columna2","Columna3"],["Celda1","Celda2","Celda3"],["Celda1","Celda2","Celda3"])
+	             LIST("idLista",["Lista1","Lista2","Lista3"])		
 	}
 	JS E {
 		VAR E="QERG";
 		docGetElemID("titulo").setHTML("class",".personal")
 		docGetElemID("titulo2").getAtt("id")
 		CONSOL("Entro")
-
 	}
 	CSS(".clase",[
-		"color":"red",
-		"background":"blue"
-	])
+		"display": "block",
+		"margin-bottom":"10px"
+ 	])
 	CSS(".clase2",[
-			"background":"yellow",
-			"background":"green"
-		])
+		"margin-bottom":"30px",
+		"display": "inline-block",
+		"margin-bottom":"10px",
+		"margin": "auto"
+	])
+	CSS("#div1",[
+		"text-align":"center"
+	])
+	CSS("#div2",[
+		"display": "block"
+	])
+	CSS("#idTabla",[
+		"margin-bottom":"30px",
+		"width": "100px",
+		"margin":"auto"
+	])
+	CSS("#idLista",[
+		"margin":"auto"
+	])
 }

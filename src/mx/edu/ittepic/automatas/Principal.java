@@ -6,6 +6,7 @@
 package mx.edu.ittepic.automatas;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -49,7 +50,8 @@ static ArrayList<String> listaErrores;
 ArrayList<Error1> manejadorErrores = new ArrayList<>();
 ArrayList<Variables> ManejadorVariables = new ArrayList<>();
 static CupSemantico parserG;
-static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=""; 
+static String codigointer = "",codigointerJs = "",codigointerCss = "",variables="";
+static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatica= new ArrayList<>();
 
     
     /* !!!!! Cambio de color de texto mientras se escribe !!!!!*/
@@ -174,6 +176,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         CUP$CupObjeto$actions.varExpFor1="";
         CUP$CupObjeto$actions.varCss1="";
         CUP$CupObjeto$actions.varCssCadena="";
+        CUP$CupObjeto$actions.varFor2="";
         
         CUP$CupSemantico$actions.varNombre="";
         CUP$CupSemantico$actions.varValor="";
@@ -298,6 +301,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
             manejadorErrores.addAll(parser.ManejadorDeErrores);
             parser.ManejadorDeErrores.clear();
         }else{
+            //System.out.println(recorridoAutomata);
             //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
         }
     }
@@ -441,6 +445,8 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
 
         jMenuItem3.setText("Copiar - Ctrl + c");
@@ -474,7 +480,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         textPane.setFont(new java.awt.Font("PT Mono", 0, 16)); // NOI18N
-        textPane.setText("MAIN index {\n\tHTML {\n\n\t           docCreateElem(\"h1\").setHTML(\"Class\",\"clase\").ChildTextH(\"Titulo\")\n                              docCreateElem(\"input\").setHTML(\"type\",\"button\").setHTML(\"value\",\"button\")\n\t            TABLE(\"\",[\"1\"],[\"2\"],[\"3\"])\n\t            LIST(\"0\",[\"1\",\"2\",\"3\"])\n\t\t\t\t\n\t}\n\tJS E {\n\t\tVAR E=\"QERG\";\n\t\tdocGetElemID(\"titulo\").setHTML(\"class\",\".personal\")\n\t\tdocGetElemID(\"titulo2\").getAtt(\"id\")\n\t\tCONSOL(\"Entro\")\n\n\t}\n\tCSS(\".clase\",[\n\t\t\"color\":\"red\",\n\t\t\"background\":\"blue\"\n\t])\n\tCSS(\".clase2\",[\n\t\t\t\"background\":\"yellow\",\n\t\t\t\"background\":\"green\"\n\t\t])\n}");
+        textPane.setText("MAIN index {\n\tHTML {\n\t               DIV div1{\n\t                       docCreateElem(\"h1\").setHTML(\"Class\",\"h1\").ChildTextH(\"Titulo de ejemplo\")\n \t               }\n\t              FOR(VAR I=0;I<2;I++){\n\t                     docCreateElem(\"label\").setHTML(\"Class\",\"col-md-4 clase\").ChildTextH(\"Etiqueta\")\n\t                     docCreateElem(\"input\").setHTML(\"type\",\"text\").setHTML(\"Class\",\"form-control col-md-4 clase\")\n\t              }\n                                           docCreateElem(\"button\").setHTML(\"value\",\"button\").setHTML(\"Class\",\"btn btn-default clase2\").ChildTextH(\"Aceptar\")\n \t             docCreateElem(\"button\").setHTML(\"value\",\"button\").setHTML(\"Class\",\"btn btn-danger clase2\").ChildTextH(\"Cancelar\")\n\t \n           \t             TABLE(\"idTabla\",[\"Columna1\",\"Columna2\",\"Columna3\"],[\"Celda1\",\"Celda2\",\"Celda3\"],[\"Celda1\",\"Celda2\",\"Celda3\"])\n\t             LIST(\"idLista\",[\"Lista1\",\"Lista2\",\"Lista3\"])\t\t\n\t}\n\tJS E {\n\t\tVAR E=\"QERG\";\n\t\tdocGetElemID(\"titulo\").setHTML(\"class\",\".personal\")\n\t\tdocGetElemID(\"titulo2\").getAtt(\"id\")\n\t\tCONSOL(\"Entro\")\n\t}\n\tCSS(\".clase\",[\n\t\t\"display\": \"block\",\n\t\t\"margin-bottom\":\"10px\"\n \t])\n\tCSS(\".clase2\",[\n\t\t\"margin-bottom\":\"30px\",\n\t\t\"display\": \"inline-block\",\n\t\t\"margin-bottom\":\"10px\",\n\t\t\"margin\": \"auto\"\n\t])\n\tCSS(\"#div1\",[\n\t\t\"text-align\":\"center\"\n\t])\n\tCSS(\"#div2\",[\n\t\t\"display\": \"block\"\n\t])\n\tCSS(\"#idTabla\",[\n\t\t\"margin-bottom\":\"30px\",\n\t\t\"width\": \"100px\",\n\t\t\"margin\":\"auto\"\n\t])\n\tCSS(\"#idLista\",[\n\t\t\"margin\":\"auto\"\n\t])\n}");
         textPane.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
         textPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -519,7 +525,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
                 compileActionPerformed(evt);
             }
         });
-        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 0, 70, 70));
+        getContentPane().add(compile, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 0, 70, 70));
 
         auto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/grafo.png"))); // NOI18N
         auto.setToolTipText("Automata");
@@ -527,11 +533,11 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         auto.setBorderPainted(false);
         auto.setContentAreaFilled(false);
         auto.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                autoMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 autoMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                autoMouseExited(evt);
             }
         });
         auto.addActionListener(new java.awt.event.ActionListener() {
@@ -539,7 +545,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
                 autoActionPerformed(evt);
             }
         });
-        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 0, 70, 70));
+        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, 70, 70));
 
         save.setBackground(null);
         save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar.png"))); // NOI18N
@@ -560,7 +566,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
                 saveActionPerformed(evt);
             }
         });
-        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 0, 70, 70));
+        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 0, 70, 70));
 
         open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/carpeta2.png"))); // NOI18N
         open.setToolTipText("Abrir");
@@ -607,11 +613,11 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         grama.setBorderPainted(false);
         grama.setContentAreaFilled(false);
         grama.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                gramaMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 gramaMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                gramaMouseExited(evt);
             }
         });
         grama.addActionListener(new java.awt.event.ActionListener() {
@@ -619,7 +625,7 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
                 gramaActionPerformed(evt);
             }
         });
-        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, -10, 70, 90));
+        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, -10, 70, 90));
 
         tblDatos.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         tblDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -729,7 +735,25 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
         jMenu2.setText("Información");
         jMenu2.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
 
-        jMenuItem4.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem13.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem13.setText("Codigo intermedio");
+        jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem13ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem13);
+
+        jMenuItem14.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem14.setText("Optimización");
+        jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem14ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem14);
+
+        jMenuItem4.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/informacion3.png"))); // NOI18N
         jMenuItem4.setText("Sobre el programa");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -783,9 +807,19 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        
-        showMessageDialog(null, "Analizador Lexico elaborado por: \nCasillas Ureña Fermin Michel\n"
-                + "Murillo Macías Manuel Alejandro\nJuan Carlos Ramírez Tapia\nEdgar Ernesto Lozano Mora");
+        if (Desktop.isDesktopSupported()) {
+            try {
+                String filePath = new File("").getAbsolutePath(); 
+                String pdf = filePath+File.separator+"src"+File.separator+"mx"+File.separator+"edu"+File.separator+"ittepic"
+                    +File.separator+"automatas"+File.separator+"Manual.pdf";
+                File myFile = new File(pdf);
+                Desktop.getDesktop().open(myFile);
+            } catch (IOException ex) {
+                // no application registered for PDFs
+            }
+        }
+       /* showMessageDialog(null, "Analizador Lexico elaborado por: \nCasillas Ureña Fermin Michel\n"
+                + "Murillo Macías Manuel Alejandro\nJuan Carlos Ramírez Tapia\nEdgar Ernesto Lozano Mora");*/
         // TODO add your handling code here:
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
@@ -890,9 +924,19 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void autoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoActionPerformed
-
-                new V_Automata().setVisible(true);
-
+        txtPane.setText("");
+        if(!recorridoAutomata.isEmpty()){
+            String x="";
+            V_Automata a=new V_Automata();
+            Collections.reverse(recorridoAutomata);
+            for(int i=0;i<recorridoAutomata.size();i++){
+                x=x+recorridoAutomata.get(i);
+            }
+            a.setText(x);
+            a.setVisible(true);
+        }else{
+            appendToPane(txtPane, "No se puede abrir el automata porque no se ha compilado", Color.RED);
+        }
     }//GEN-LAST:event_autoActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
@@ -950,7 +994,8 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
     }//GEN-LAST:event_comMouseEntered
 
     private void comActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comActionPerformed
-       if (manejadorErrores.isEmpty()) {
+       txtPane.setText("");
+       if (manejadorErrores.isEmpty() && codigointer!="" && codigointer!=null) {
             
             String x= "<!DOCTYPE html>"
                     + "<html>"
@@ -982,10 +1027,17 @@ static String codigointer = "",codigointerJs = "",codigointerCss = "",variables=
             guardar(x,locacion+File.separator+"index.html");
             txtPane.setText("");
             appendToPane(txtPane, "¡Se construyó el proyecto con exito!", Color.BLUE);
-            //System.out.print(x);
-                //System.out.print(codigointerJs);
-                //System.out.print(codigointerCss);
-            //appendToPane(txtPane, "¡Análisis Terminado!", Color.BLUE);
+            try {
+                Desktop desktop = null;
+                if (Desktop.isDesktopSupported()) {
+                  desktop = Desktop.getDesktop();
+                  desktop.open(new File(locacion+File.separator+"index.html"));
+                }
+              } catch (IOException ioe) {
+                ioe.printStackTrace();
+              }
+        }else{
+            appendToPane(txtPane, "No se puede construir porque el codigo no se ha compilado", Color.RED);
         }
     }//GEN-LAST:event_comActionPerformed
 
@@ -1026,7 +1078,21 @@ int returnVal = fileChooser.showOpenDialog(this);
     }//GEN-LAST:event_openActionPerformed
 
     private void gramaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gramaActionPerformed
-        new V_gramatica().setVisible(true);
+
+        txtPane.setText("");
+        if(!recorridoGramatica.isEmpty()){
+            String x="";
+            V_gramatica g=new V_gramatica();
+            Collections.reverse(recorridoGramatica);
+            for(int i=0;i<recorridoGramatica.size();i++){
+                x=x+recorridoGramatica.get(i);
+            }
+            g.setText(x);
+            g.setVisible(true);
+        }else{
+            appendToPane(txtPane, "No se puede abrir la gramatica porque no se ha compilado", Color.RED);
+        }
+        
     }//GEN-LAST:event_gramaActionPerformed
 
     private void gramaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gramaMouseEntered
@@ -1036,6 +1102,43 @@ int returnVal = fileChooser.showOpenDialog(this);
     private void gramaMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gramaMouseExited
           grama.setIcon(new javax.swing.ImageIcon(getClass().getResource("abc.png"))); // TODO add your handling code here:
     }//GEN-LAST:event_gramaMouseExited
+
+    private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
+        txtPane.setText("");
+        if(!codigointer.equals("") && codigointer!=null){
+            Optimizacion e = new Optimizacion();
+            e.setOptimizacion(codigointer);
+            e.setVisible(true);
+        }else{
+            appendToPane(txtPane, "No se puede abrir la ventana de codigo intermedio porque no se ha compilado", Color.RED);
+        }
+    }//GEN-LAST:event_jMenuItem13ActionPerformed
+
+    private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
+       txtPane.setText("");
+        if(!codigointer.equals("") && codigointer!=null){
+           String x= "<!DOCTYPE html>"
+                    + "\n<html>"
+                    + "\n<head>"
+                    + "\n<title>Index</title>"
+                    + "\n<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' ></script>"
+                   + "\n<script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' ></script>"
+                    + "\n<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' >"
+                    + "\n<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' ></script>"
+                    + "\n<link rel='stylesheet' type='text/css' href='css/index.css'>"
+                    + "\n<script type='text/javascript' src='js/index.js'></script>"
+                    + "\n</head>"
+                    + "\n<body>"
+                    +codigointer
+                    + "\n</body>"
+                    + "\n</html>";
+            Optimizacion e = new Optimizacion();
+            e.setOptimizacion(x);
+            e.setVisible(true);
+        }else{
+            appendToPane(txtPane, "No se puede abrir la ventana de optimizacion porque no se ha compilado", Color.RED);
+        }
+    }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1100,6 +1203,8 @@ int returnVal = fileChooser.showOpenDialog(this);
     private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;

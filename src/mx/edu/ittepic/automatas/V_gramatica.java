@@ -15,7 +15,9 @@ public class V_gramatica extends javax.swing.JFrame {
      * Creates new form V_gramatica
      */
     public V_gramatica() {
+        
         initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -28,25 +30,26 @@ public class V_gramatica extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        txtPaneGramatica = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        txtPaneGramatica.setColumns(20);
+        txtPaneGramatica.setRows(5);
+        jScrollPane1.setViewportView(txtPaneGramatica);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, 530, 140));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, 710, 190));
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, -1, -1));
 
         jTextArea2.setColumns(20);
         jTextArea2.setRows(5);
         jTextArea2.setText("inicio ::=    sentenciaMain | sentenciaMain sentenciaDeclare ;\n\nsentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C;\nprimeraSentencia::= sentenciaHTML | sentenciaHTML sentenciasInterior;\nsentenciasInterior::=   sentenciaJS\n                        | sentenciaJS sentenciasInterior\n                        | sentenciaCSS\n                        | sentenciaCSS sentenciasInterior\n;\n\nsentenciaHTML ::= HTML LLAVE_A cuerpo LLAVE_C | HTML LLAVE_A LLAVE_C\n;\nsentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C\n;\nsentenciaCSS ::=CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C\n;\ncadena::= STRING | ID;\ncondicionCSS ::= STRING DOSPUNTOS NI | STRING DOSPUNTOS NI condicionCSS2\n;\ncondicionCSS2 ::= COMA STRING DOSPUNTOS NI | COMA STRING DOSPUNTOS NI condicionCSS2\n;\nNI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO\n;\n\ncuerpo ::=   sentenciaFor\n            | cuerpo sentenciaFor\n            | tabla\n            | cuerpo tabla\n            | lista\n            | cuerpo lista\n            | divElem\n            | cuerpo divElem\n            | asignarVariable\n            | cuerpo asignarVariable\n            | funcion\n            | cuerpo funcion\n            | consola\n            | cuerpo consola\n            | obtenerElemento\n            | cuerpo obtenerElemento\n            | llamarFuncion\n            | cuerpo llamarFuncion     \n;\nconsola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C\n;\n\nobtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones                    \n                    | elementos PARENTESIS_A STRING PARENTESIS_C\n;\nelementos::= docGetElemID| docGetElemClass | docCreateElem\n;\n\nfunciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C\n            | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C\n            | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C PUNTO funciones\n            | funciones4 PARENTESIS_A PARENTESIS_C\n;\nfunciones2::= setHTML | optSelect | beforeChild ;\nfunciones3::= ChildText | Child | getAtt | RChild | AClass | RClass | Remove\n\n;\nfunciones4::=inHTML;\nllamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C\n                    | ID PARENTESIS_A PARENTESIS_C\n;\nlista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C\n;\n\ntabla::= TABLE PARENTESIS_A PARENTESIS_C\n        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C\n;\ncuerpoTabla::= STRING | STRING COMA cuerpoTabla \n;\ndivElem::= DIV ID LLAVE_A cuerpo LLAVE_C\n           | DIV ID LLAVE_A LLAVE_C\n;\n\nsentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C\n                    | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare\n;\n\nsentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}\n                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}\n;\n\ncondicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3\n;\n\nexpFor1 ::=   VAR ID ASIGNACION NUMERO\n;\n\nexpFor2 ::= NUMID comparador NUMID ;\n\nexpFor3 ::= ID OPERCREMENTO | ID OPERDECREMENTO\n;\nNUMID::= ID | NUMERO\n;\n\nasignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA\n                    | ID ASIGNACION NUMIDSTR PUNTOCOMA\n;\nNUMIDSTR ::= NUMERO | ID | STRING\n;\n\ncompuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR\n;\n\ncomparador ::= MAYORQUE\n              | MAYORIGUAL\n              | MENORQUE\n              | MENORIGUAL\n              | IGUAL\n              | IGUAL2\n              | DIFERENTE\n;\nfuncion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C\n            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C\n            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C\n            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C\n;\n\nparametros ::= ID | ID parametros2\n;\nparametros2 ::= COMA ID | COMA ID parametros\n;");
-        getContentPane().add(jTextArea2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 700, 200));
+        getContentPane().add(jTextArea2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 710, 200));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/fondo2.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 730, 430));
@@ -88,12 +91,12 @@ public class V_gramatica extends javax.swing.JFrame {
             }
         });
     }
-
+    public void setText(String pass) {this.txtPaneGramatica.setText(pass);}
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea txtPaneGramatica;
     // End of variables declaration//GEN-END:variables
 }

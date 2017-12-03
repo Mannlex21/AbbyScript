@@ -8,7 +8,7 @@ action code{:
     static String v="",v2="",v3="",v4="",v5="", vText="",jsText="";
     static String attrElem="",attrElem2="", listaElem="";
     static String expFor1="",expFor2="",expFor3="",expForOper="",expForAsig="",forElem="", varFor="",
-                    varExpFor1="",varCssCadena="",varCss1="",varCss2="";
+                    varExpFor1="",varCssCadena="",varCss1="",varCss2="",varFor2="",varFor3="";
     :};
 
 parser code {:
@@ -167,11 +167,11 @@ cuerpo2::=crearElemento
             | cuerpo2 divElem
             | lista
             | cuerpo2 lista
-
+            | sentenciaFor
+            | cuerpo2 sentenciaFor
 ;
-cuerpo ::=   sentenciaFor
-            | cuerpo sentenciaFor
-            | asignarVariable
+cuerpo ::=
+            asignarVariable
             | cuerpo asignarVariable
             | funcion
             | cuerpo funcion
@@ -204,15 +204,25 @@ cuerpo ::=   sentenciaFor
             | cuerpo llamarFuncion
 ;*/
 cuerpoFor ::=   sentenciaFor
+                {:forElem=forElem+varFor2;varFor2="";:}
             | cuerpoFor sentenciaFor
+              {:forElem=forElem+varFor2;varFor2="";:}
             | tabla
+              {:forElem=forElem+varFor2;varFor2="";:}
             | cuerpoFor tabla
+              {:forElem=forElem+varFor2;varFor2="";:}
             | crearElemento
+              {:forElem=forElem+varFor2;varFor2="";:}
             | cuerpoFor crearElemento
+              {:forElem=forElem+varFor2;varFor2="";:}
             | lista
+              {:forElem=forElem+varFor2;varFor2="";:}
             | cuerpoFor lista
+              {:forElem=forElem+varFor2;varFor2="";:}
             | divElem
+              {:forElem=forElem+varFor2;varFor2="";:}
             | cuerpoFor divElem
+              {:forElem=forElem+varFor2;varFor2="";:}
 
 ;
 /*--------------------------------------------------------------*/
@@ -240,8 +250,12 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
                                 }
                                 if(vText.equals("") || vText==null ){
                                     fin=fin+"<"+x[1]+" "+x4+"></"+x[1]+">\n";
+                                    varFor2="<"+x[1]+" "+x4+"></"+x[1]+">\n";
+                                    varFor3=varFor3+"<"+x[1]+" "+x4+"></"+x[1]+">\n";
                                 }else{
                                     fin=fin+"<"+x[1]+" "+x4+">"+x5[1]+"</"+x[1]+">\n";
+                                    varFor2="<"+x[1]+" "+x4+">"+x5[1]+"</"+x[1]+">\n";
+                                    varFor3=varFor3+"<"+x[1]+" "+x4+">"+x5[1]+"</"+x[1]+">\n";
                                 }
                                 attrElem="";
                                 attrElem2="";
@@ -362,22 +376,24 @@ lista::= LIST PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PAREN
                 String x3="";
                 for(int i=0; i<x2.length;i++){
                     String[] x4=x2[i].split("\"");
-                    x3=x3+"\n<li>"+x4[1]+"</li>";
+                    x3=x3+"\n<li class='list-group-item list-group-item-success'>"+x4[1]+"</li>";
                 }
-                fin=fin+"<ul>"+x3+"\n</ul>\n";
+                fin=fin+"<ul id="+e.toString()+" class='list-group col-sm-4'>"+x3+"\n</ul>\n";
+                varFor2="<ul id="+e.toString()+" class='list-group col-sm-4'>"+x3+"\n</ul>\n";
                 listaElem="";
             :}
 ;
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
-           {:fin=fin+"<table></table>\n";:}
-        |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA
+           {:fin=fin+"<table class='table'></table>\n";:}
+        |TABLE PARENTESIS_A STRING:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA
             CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             {:
                 String[] x = listaElem.split(",");
                 String x2="",x3="",x4="";
                 int r = ((x.length)/3);
                 int r2= r,r3=r*2;
+                //Strin[] id=e.toString().split("");
                 for(int i=0;i<r;i++){
                     x2=x2+"<th>"+x[i]+"</th>\n";
                     x3=x3+"<th>"+x[r2]+"</th>\n";
@@ -387,7 +403,8 @@ tabla::= TABLE PARENTESIS_A PARENTESIS_C
                 x2="<tr>\n"+x2+"</tr>\n";
                 x3="<tr>\n"+x3+"</tr>\n";
                 x4="<tr>\n"+x4+"</tr>\n";
-                fin=fin+"<table>\n"+x2+x3+x4+"</table>\n";
+                fin=fin+"<table id="+e.toString()+" class='table col-sm-4 table-striped'>\n"+x2+x3+x4+"</table>\n";
+                varFor2="<table id="+e.toString()+" class='table col-sm-4 table-striped'>\n"+x2+x3+x4+"</table>\n";
                 listaElem="";
             :}
 ;
@@ -398,14 +415,16 @@ cuerpoTabla::= STRING:e
 ;
 
 divElem::= DIV ID:e LLAVE_A cuerpo2 LLAVE_C
-            {:fin="<div id='"+e.toString()+"'>\n"+fin+"</div>\n";:}
+            {:fin="<div id='"+e.toString()+"'>\n"+fin+"</div>\n";
+            varFor3="";
+                varFor2="<div id='"+e.toString()+"'>\n"+fin+"</div>\n"; :}
            | DIV ID LLAVE_A LLAVE_C
 ;
 /*--------------------------------------------------------------*/
 sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
                     | DECLARE PAGE ID LLAVE_A LLAVE_C sentenciaDeclare
 ;
-sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpoFor LLAVE_C
                 {:
                         String x ="";
                         if(expForAsig.equals("<")){

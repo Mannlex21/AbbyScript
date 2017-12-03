@@ -3,7 +3,8 @@ import java_cup.runtime.*;
 import java.io.FileReader;
 import java.util.*;
 
-
+action code{:
+    :};
 parser code {:
     boolean esId;
     String tipoActual;
@@ -12,7 +13,9 @@ parser code {:
     String valorActualTipo;
     String fil,col;
     ArrayList<Error1> ManejadorDeErrores;
+    String recorridoAutomata="", recorridoGramatica="";
     boolean esDAssig=false;
+
     int fl;
 
     public Cup(java_cup.runtime.Scanner s,ArrayList<Error1> m,int tfl) {
@@ -93,12 +96,18 @@ start with inicio;
 
 
 inicio ::=    sentenciaMain
+                {:Principal.recorridoAutomata.add("Inicio automata\n");
+                Principal.recorridoGramatica.add("Inicio automata\n");:}
             | sentenciaMain sentenciaDeclare
+            {:Principal.recorridoAutomata.add("Inicio automata\n");
+            Principal.recorridoGramatica.add("Inicio automata\n");:}
             | error:e
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error en la estructura del programa."));:}
        ;
 
 sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
+                      {:Principal.recorridoAutomata.add("Entro a sentencia main\n");
+                      Principal.recorridoGramatica.add("Entro a sentencia main\n");:}
                     | MAIN:e
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'ID'."));:}
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{};'."));:}
@@ -112,17 +121,31 @@ sentenciaMain ::=   MAIN ID:e LLAVE_A primeraSentencia LLAVE_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 ;
 primeraSentencia::= sentenciaHTML
+                      {:Principal.recorridoAutomata.add("Entro a sentencia HTML\n");
+                      Principal.recorridoGramatica.add("Entro a sentencia HTML\n");:}
                     | sentenciaHTML sentenciasInterior
+                      {:Principal.recorridoAutomata.add("Entro a sentencia HTML\n");
+                      Principal.recorridoGramatica.add("Entro a sentencia HTML\n");:}
 ;
 sentenciasInterior::=   sentenciaJS
+                          {:Principal.recorridoAutomata.add("Entro a sentencia JS\n");
+                          Principal.recorridoGramatica.add("Entro a sentencia JS\n");:}
                         | sentenciaJS sentenciasInterior
+                          {:Principal.recorridoAutomata.add("Entro a sentencia JS\n");
+                          Principal.recorridoGramatica.add("Entro a sentencia JS\n");:}
                         | sentenciaCSS
+                          {:Principal.recorridoAutomata.add("Entro a sentencia CSS\n");
+                          Principal.recorridoGramatica.add("Entro a sentencia CSS\n");:}
                         | sentenciaCSS sentenciasInterior
+                          {:Principal.recorridoAutomata.add("Entro a sentencia CSS\n");
+                          Principal.recorridoGramatica.add("Entro a sentencia CSS\n");:}
 ;
 
 sentenciaHTML ::=
                     HTML LLAVE_A cuerpo2 LLAVE_C
+                    {:Principal.recorridoGramatica.add("Entro a sentencia HTML, con cuerpo\n");:}
                     | HTML LLAVE_A LLAVE_C
+                    {:Principal.recorridoGramatica.add("Entro a sentencia HTML, sin cuerpo\n");:}
 
                     | HTML error:e LLAVE_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
@@ -135,7 +158,7 @@ sentenciaHTML ::=
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
 ;
 sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
-
+                  {:Principal.recorridoGramatica.add("Entro a sentencia JS, con cuerpo\n");:}
                 | JS error:e LLAVE_A cuerpo LLAVE_C
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'ID'."));:}
                 | JS ID LLAVE_A cuerpo error:e
@@ -145,7 +168,7 @@ sentenciaJS ::=  JS ID LLAVE_A cuerpo LLAVE_C
  ;
 sentenciaCSS ::=
                  CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
-
+                {:Principal.recorridoGramatica.add("Entro a sentencia CSS, con condicionesCSS\n");:}
                 | CSS error:e cadena COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
                 | CSS PARENTESIS_A error:e COMA CORCHETE_A condicionCSS CORCHETE_C PARENTESIS_C
@@ -159,9 +182,12 @@ sentenciaCSS ::=
                 | CSS PARENTESIS_A cadena COMA CORCHETE_A condicionCSS CORCHETE_C error:e PUNTOCOMA
                    {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ')'."));:}
 ;
-cadena::= STRING | ID;
+cadena::= STRING {:Principal.recorridoGramatica.add("Entro a cadena\n");:} | ID {:Principal.recorridoGramatica.add("Entro a cadena\n");:}
+;
 condicionCSS ::= STRING DOSPUNTOS NI
+                  {:Principal.recorridoGramatica.add("Entro a condicionCSS\n");:}
                 | STRING DOSPUNTOS NI condicionCSS2
+                  {:Principal.recorridoGramatica.add("Entro a condicionCSS\n");:}
                 | DOSPUNTOS:e NI
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'STRING'."));:}
                 | STRING:e NI
@@ -171,7 +197,9 @@ condicionCSS ::= STRING DOSPUNTOS NI
                 | /*VACIO*/
 ;
 condicionCSS2 ::= COMA STRING DOSPUNTOS NI
+                    {:Principal.recorridoGramatica.add("Entro a condicionCSS2\n");:}
                 | COMA STRING DOSPUNTOS NI condicionCSS2
+                    {:Principal.recorridoGramatica.add("Entro a condicionCSS\n");:}
                 | STRING:e DOSPUNTOS NI
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ',''."));:}
                 | COMA DOSPUNTOS:e NI
@@ -181,33 +209,58 @@ condicionCSS2 ::= COMA STRING DOSPUNTOS NI
                 | COMA STRING DOSPUNTOS:e
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba 'STRING', 'NUMERO' o 'ID'."));:}
 ;
-NI ::= NUMERO |ID | STRING | NUMERO SUMA STRING | STRING SUMA NUMERO
+NI ::= NUMERO {:Principal.recorridoGramatica.add("Entro a NI\n");:} |ID {:Principal.recorridoGramatica.add("Entro a NI\n");:} | STRING {:Principal.recorridoGramatica.add("Entro a NI\n");:} | NUMERO SUMA STRING {:Principal.recorridoGramatica.add("Entro a NI\n");:}
+              | STRING SUMA NUMERO {:Principal.recorridoGramatica.add("Entro a NI\n");:}
 ;
 cuerpo2::=crearElemento
+              {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | cuerpo2 crearElemento
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | tabla
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | cuerpo2 tabla
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | divElem
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | cuerpo2 divElem
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | lista
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
             | cuerpo2 lista
-
+            {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
+            | sentenciaFor
+                {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
+            | cuerpo2 sentenciaFor
+                {:Principal.recorridoGramatica.add("Entro a cuerpo2\n");:}
 ;
 cuerpo ::=   sentenciaFor
+              {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo sentenciaFor
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | asignarVariable
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo asignarVariable
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | funcion
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo funcion
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | consola
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo consola
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | obtenerElemento
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo obtenerElemento
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | llamarFuncion
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
             | cuerpo llamarFuncion
+            {:Principal.recorridoGramatica.add("Entro a cuerpo\n");:}
 ;
 /*--------------------------------------------------------------*/
 consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
+            {:Principal.recorridoGramatica.add("Entro a consola\n");:}
             | CONSOL error:e NUMIDSTR PARENTESIS_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
             | CONSOL PARENTESIS_A error:e PARENTESIS_C
@@ -216,8 +269,9 @@ consola::= CONSOL PARENTESIS_A NUMIDSTR PARENTESIS_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
 crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
+                    {:Principal.recorridoGramatica.add("Entro a crearElemento\n");:}
                     | elementos2 PARENTESIS_A STRING:e PARENTESIS_C
-
+                      {:Principal.recorridoGramatica.add("Entro a crearElemento\n");:}
                     | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
                     | elementos2 error:e STRING PARENTESIS_C PUNTO funciones
@@ -240,7 +294,9 @@ crearElemento::= elementos2 PARENTESIS_A STRING:e PARENTESIS_C PUNTO funciones
 
 ;
 obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
+                      {:Principal.recorridoGramatica.add("Entro a obtenerElemento\n");:}
                     | elementos PARENTESIS_A STRING PARENTESIS_C
+                        {:Principal.recorridoGramatica.add("Entro a obtenerElemento\n");:}
                     | error:e PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
                     | elementos error:e STRING PARENTESIS_C PUNTO funciones
@@ -262,14 +318,20 @@ obtenerElemento::= elementos PARENTESIS_A STRING PARENTESIS_C PUNTO funciones
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
 elementos::= docGetElemID
+              {:Principal.recorridoGramatica.add("Entro a elementos\n");:}
             | docGetElemClass
+              {:Principal.recorridoGramatica.add("Entro a elementos\n");:}
 ;
-elementos2::= docCreateElem
+elementos2::= docCreateElem {:Principal.recorridoGramatica.add("Entro a elementos2\n");:}
 ;
 funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
+                {:Principal.recorridoGramatica.add("Entro a funciones\n");:}
             | funciones2 PARENTESIS_A STRING COMA STRING PARENTESIS_C
+            {:Principal.recorridoGramatica.add("Entro a funciones\n");:}
             | funciones2 PARENTESIS_A STRING:e1 COMA STRING:e2 PARENTESIS_C PUNTO funciones
+            {:Principal.recorridoGramatica.add("Entro a funciones\n");:}
             | funciones4 PARENTESIS_A PARENTESIS_C
+            {:Principal.recorridoGramatica.add("Entro a funciones\n");:}
 
             | error:e PARENTESIS_A STRING PARENTESIS_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Funcion invalida."));:}
@@ -301,13 +363,18 @@ funciones::=funciones3 PARENTESIS_A STRING PARENTESIS_C
                             {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 
 ;
-funciones2::= setHTML | optSelect | beforeChild ;
-funciones3::= ChildText | Child | getAtt | RChild | AClass | RClass | Remove | ChildTextH
+funciones2::= setHTML {:Principal.recorridoGramatica.add("Entro a funciones2\n");:} | optSelect | beforeChild {:Principal.recorridoGramatica.add("Entro a funciones2\n");:};
+funciones3::= ChildText {:Principal.recorridoGramatica.add("Entro a funciones3\n");:} | Child {:Principal.recorridoGramatica.add("Entro a funciones3\n");:}
+| getAtt {:Principal.recorridoGramatica.add("Entro a funciones3\n");:} | RChild {:Principal.recorridoGramatica.add("Entro a funciones3\n");:}
+| AClass {:Principal.recorridoGramatica.add("Entro a funciones3\n");:} | RClass {:Principal.recorridoGramatica.add("Entro a funciones3\n");:}
+| Remove {:Principal.recorridoGramatica.add("Entro a funciones3\n");:} | ChildTextH {:Principal.recorridoGramatica.add("Entro a funciones3\n");:}
 
 ;
-funciones4::=inHTML;
+funciones4::=inHTML {:Principal.recorridoGramatica.add("Entro a funciones4\n");:};
 llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
+                  {:Principal.recorridoGramatica.add("Entro a llamarFuncion\n");:}
                     | ID PARENTESIS_A PARENTESIS_C
+                      {:Principal.recorridoGramatica.add("Entro a llamarFuncion\n");:}
 
                     | ID error:e parametros PARENTESIS_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
@@ -317,6 +384,7 @@ llamarFuncion::= ID PARENTESIS_A parametros PARENTESIS_C
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
 lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
+          {:Principal.recorridoGramatica.add("Entro a lista\n");:}
             | LIST error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
             | LIST PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
@@ -334,8 +402,9 @@ lista::= LIST PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTE
 ;
 
 tabla::= TABLE PARENTESIS_A PARENTESIS_C
+        {:Principal.recorridoGramatica.add("Entro a tabla\n");:}
         |TABLE PARENTESIS_A STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
-
+          {:Principal.recorridoGramatica.add("Entro a tabla\n");:}
         |TABLE error:e STRING COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
             {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '('."));:}
         |TABLE PARENTESIS_A error:e COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C COMA CORCHETE_A cuerpoTabla CORCHETE_C PARENTESIS_C
@@ -368,7 +437,7 @@ tabla::= TABLE PARENTESIS_A PARENTESIS_C
             {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 
 ;
-cuerpoTabla::= STRING | STRING COMA cuerpoTabla
+cuerpoTabla::= STRING {:Principal.recorridoGramatica.add("Entro a cuerpoTabla\n");:} | STRING COMA cuerpoTabla {:Principal.recorridoGramatica.add("Entro a cuerpoTabla\n");:}
                 | error:e
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un STRING."));:}
                 | STRING error:e
@@ -376,7 +445,9 @@ cuerpoTabla::= STRING | STRING COMA cuerpoTabla
 
 ;
 divElem::= DIV ID LLAVE_A cuerpo2 LLAVE_C
+              {:Principal.recorridoGramatica.add("Entro a divElem\n");:}
             | DIV ID LLAVE_A LLAVE_C
+            {:Principal.recorridoGramatica.add("Entro a divElemn");:}
             | DIV error:e LLAVE_A LLAVE_C
                   {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ID."));:}
             | DIV ID error:e LLAVE_C
@@ -406,8 +477,8 @@ sentenciaDeclare ::= DECLARE PAGE ID LLAVE_A LLAVE_C
  /* For *///---------------------------------->
 /*******/
 
-sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
+sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo2 LLAVE_C {:Principal.recorridoGramatica.add("Entro a sentenciaForfor\n");:}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:Principal.recorridoGramatica.add("Entro a sentenciaFor\n");:}
 
                 | FOR error:e condicionFor PARENTESIS_C LLAVE_A LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
@@ -418,17 +489,18 @@ sentenciaFor ::=  FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo LLAV
                 | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A error:e {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 
-                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR error:e condicionFor PARENTESIS_C LLAVE_A cuerpo2 LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '('."));:}
-                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor error:e LLAVE_A cuerpo2 LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ';'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo LLAVE_C {:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C error:e cuerpo2 LLAVE_C {:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '{'."));:}
-                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo error:e{:  :}
+                | FOR PARENTESIS_A condicionFor PARENTESIS_C LLAVE_A cuerpo2 error:e{:  :}
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '}'."));:}
 ;
 
 condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
+                    {:Principal.recorridoGramatica.add("Entro a condicionfor\n");:}
                     //| expFor1 EN ID
                     | expFor1 error:e expFor2 PUNTOCOMA expFor3
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba ';'."));:}
@@ -450,6 +522,7 @@ condicionFor ::=    expFor1 PUNTOCOMA expFor2 PUNTOCOMA expFor3
 ;
 
 expFor1 ::=   VAR ID ASIGNACION NUMERO
+              {:Principal.recorridoGramatica.add("Entro a expFor1\n");:}
             | VAR error:e ASIGNACION  NUMERO
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
             | VAR ID error:e NUMERO
@@ -459,16 +532,19 @@ expFor1 ::=   VAR ID ASIGNACION NUMERO
 ;
 
 expFor2 ::= NUMID comparador NUMID
+            {:Principal.recorridoGramatica.add("Entro a expFor2\n");:}
 ;
 
 expFor3 ::= ID OPERCREMENTO
+              {:Principal.recorridoGramatica.add("Entro a expFor3\n");:}
             | ID OPERDECREMENTO
+              {:Principal.recorridoGramatica.add("Entro a expFor3\n");:}
             | error:e OPERDECREMENTO
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
             | ID error:e
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un un operador de decremento o cremento."));:}
 ;
-NUMID::= ID | NUMERO
+NUMID::= ID {:Principal.recorridoGramatica.add("Entro a NUMID\n");:}| NUMERO {:Principal.recorridoGramatica.add("Entro a NUMID\n");:}
         | error:e
             {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un NUMERO o ID."));:}
 ;
@@ -476,7 +552,9 @@ NUMID::= ID | NUMERO
  /* Asignar Variable  *///---------------------------------->
 /*********************/
 asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
+                      {:Principal.recorridoGramatica.add("Entro a asignarVariable\n");:}
                     | ID ASIGNACION NUMIDSTR PUNTOCOMA
+                    {:Principal.recorridoGramatica.add("Entro a asignarVariable\n");:}
 
                     | VAR ID:e NUMIDSTR PUNTOCOMA
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un '='."));:}
@@ -515,29 +593,31 @@ asignarVariable ::= VAR ID ASIGNACION NUMIDSTR PUNTOCOMA
                         {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba '=' ."));:}
 
 ;
-NUMIDSTR ::= NUMERO | ID | STRING
+NUMIDSTR ::= NUMERO {:Principal.recorridoGramatica.add("Entro a NUMIDSTR\n");:} | ID {:Principal.recorridoGramatica.add("Entro a NUMIDSTR\n");:}
+            | STRING {:Principal.recorridoGramatica.add("Entro a NUMIDSTR\n");:}
             | NUMERO INVNUMERO:e
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Numero invalido."));:}
             | INVNUMERO:e NUMERO
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Numero invalido."));:}
 ;
 
-compuerta ::= AND | ANDSIMPLE | OR | ORSIMPLE | XOR
+compuerta ::= AND {:Principal.recorridoGramatica.add("Entro a compuerta\n");:} | ANDSIMPLE {:Principal.recorridoGramatica.add("Entro a compuerta\n");:}
+              | OR | ORSIMPLE | XOR
 ;
 
-comparador ::= MAYORQUE
-              | MAYORIGUAL
-              | MENORQUE
-              | MENORIGUAL
-              | IGUAL
-              | IGUAL2
-              | DIFERENTE
+comparador ::= MAYORQUE {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | MAYORIGUAL {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | MENORQUE {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | MENORIGUAL {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | IGUAL {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | IGUAL2 {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
+              | DIFERENTE {:Principal.recorridoGramatica.add("Entro a comparador\n");:}
 ;
 
-funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C
-            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C
-            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C
+funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:Principal.recorridoGramatica.add("Entro a funcion\n");:}
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A LLAVE_C {:Principal.recorridoGramatica.add("Entro a funcion\n");:}
+            | FUNCTION ID PARENTESIS_A PARENTESIS_C LLAVE_A cuerpo LLAVE_C {:Principal.recorridoGramatica.add("Entro a funcion\n");:}
+            | FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A LLAVE_C {:Principal.recorridoGramatica.add("Entro a funcion\n");:}
 
             | FUNCTION error:e PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LLAVE_C
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
@@ -630,15 +710,15 @@ funcion ::=   FUNCTION ID PARENTESIS_A parametros PARENTESIS_C LLAVE_A cuerpo LL
                 {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error sintactico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ')'."));:}
 ;
 
-parametros ::=    ID
-                | ID parametros2
+parametros ::=    ID {:Principal.recorridoGramatica.add("Entro a parametros\n");:}
+                | ID parametros2 {:Principal.recorridoGramatica.add("Entro a parametros\n");:}
                 | error:e
                   {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
                 | error:e parametros2
                     {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un 'ID'."));:}
 ;
-parametros2 ::= COMA ID
-                | COMA ID parametros
+parametros2 ::= COMA ID {:Principal.recorridoGramatica.add("Entro a parametros2\n");:}
+                | COMA ID parametros {:Principal.recorridoGramatica.add("Entro a parametros2\n");:}
                 | COMA error:e
                   {:parser.ManejadorDeErrores.add(new Error1("ES",eleft,eright,"Error semantico en la linea: "+(eleft+1)+", columna: "+(eright+1)+"."+" Se esperaba un ID."));:}
 ;
