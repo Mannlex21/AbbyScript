@@ -5,8 +5,10 @@
  */
 package mx.edu.ittepic.automatas;
 
+import com.ozten.font.JFontChooser;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,7 +27,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JTextPane;
@@ -444,6 +450,12 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenu4 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem11 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem19 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
+        jMenuItem16 = new javax.swing.JMenuItem();
+        jMenuItem17 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
@@ -732,10 +744,56 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
 
         jMenuBar1.add(jMenu4);
 
+        jMenu5.setText("Temas");
+        jMenu5.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 15)); // NOI18N
+
+        jMenuItem19.setText("Fuente");
+        jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem19ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem19);
+
+        jMenuItem15.setText("Deafault");
+        jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem15ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem15);
+
+        jMenuItem16.setText("Rojo");
+        jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem16ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem16);
+
+        jMenuItem17.setText("Naranja");
+        jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem17ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem17);
+
+        jMenuItem18.setText("Verde");
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem18ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem18);
+
+        jMenuBar1.add(jMenu5);
+
         jMenu2.setText("Información");
-        jMenu2.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenu2.setFont(new java.awt.Font("Lucida Sans", 0, 16)); // NOI18N
 
         jMenuItem13.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/inter.png"))); // NOI18N
         jMenuItem13.setText("Codigo intermedio");
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -745,6 +803,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenu2.add(jMenuItem13);
 
         jMenuItem14.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/opti.png"))); // NOI18N
         jMenuItem14.setText("Optimización");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1140,6 +1199,35 @@ int returnVal = fileChooser.showOpenDialog(this);
         }
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
+    private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
+       fondos(labelfondo,"fondo2.png");        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem15ActionPerformed
+
+    private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
+        fondos(labelfondo,"fondo_rojo.png");          // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem16ActionPerformed
+
+    private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
+        fondos(labelfondo,"fondo_naranja.jpg");          // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem17ActionPerformed
+
+    private void jMenuItem18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem18ActionPerformed
+              fondos(labelfondo,"fondo_verde.jpg");          // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem18ActionPerformed
+
+    private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
+           JFontChooser fc = new JFontChooser();
+        JOptionPane.showMessageDialog(this, fc, "Seleccione el tipo de fuente", JOptionPane.PLAIN_MESSAGE);
+        txtPane.setFont(fc.getPreviewFont());        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem19ActionPerformed
+public void fondos(JLabel label,String ruta){
+        ImageIcon imagen= new ImageIcon(getClass().getResource(ruta));
+        Icon icono= new ImageIcon(imagen.getImage().
+                getScaledInstance(label.getWidth(),label.getHeight(),Image.SCALE_DEFAULT));
+        label.setIcon(icono);
+        label.repaint();
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -1198,6 +1286,7 @@ int returnVal = fileChooser.showOpenDialog(this);
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
@@ -1205,6 +1294,11 @@ int returnVal = fileChooser.showOpenDialog(this);
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
+    private javax.swing.JMenuItem jMenuItem16;
+    private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
+    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
