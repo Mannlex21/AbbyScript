@@ -1,5 +1,5 @@
 $(document).ready(function () {
-VAR E ="QERG";
+var E ="QERG";
 document.getElementById("titulo")
 
 

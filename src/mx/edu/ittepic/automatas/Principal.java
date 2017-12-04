@@ -557,7 +557,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
                 autoActionPerformed(evt);
             }
         });
-        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 0, 70, 70));
+        getContentPane().add(auto, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 0, 70, 70));
 
         save.setBackground(null);
         save.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar.png"))); // NOI18N
@@ -566,11 +566,11 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         save.setBorderPainted(false);
         save.setContentAreaFilled(false);
         save.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                saveMouseExited(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 saveMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                saveMouseExited(evt);
             }
         });
         save.addActionListener(new java.awt.event.ActionListener() {
@@ -578,7 +578,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
                 saveActionPerformed(evt);
             }
         });
-        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 0, 70, 70));
+        getContentPane().add(save, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 0, 70, 70));
 
         open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/carpeta2.png"))); // NOI18N
         open.setToolTipText("Abrir");
@@ -598,7 +598,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
                 openActionPerformed(evt);
             }
         });
-        getContentPane().add(open, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 70, 70));
+        getContentPane().add(open, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 70, 70));
 
         com.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/caja.png"))); // NOI18N
         com.setToolTipText("Analizar");
@@ -637,7 +637,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
                 gramaActionPerformed(evt);
             }
         });
-        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, -10, 70, 90));
+        getContentPane().add(grama, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, -10, 70, 90));
 
         tblDatos.setFont(new java.awt.Font("Malayalam MN", 0, 14)); // NOI18N
         tblDatos.setModel(new javax.swing.table.DefaultTableModel(
@@ -670,9 +670,10 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenuBar1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
 
         jMenu1.setText("Archivo");
-        jMenu1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenu1.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
 
-        jMenuItem1.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, 0));
+        jMenuItem1.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/carpeta.png"))); // NOI18N
         jMenuItem1.setText("Abrir archivo");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -682,7 +683,8 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu1.add(jMenuItem1);
 
-        jMenuItem12.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
+        jMenuItem12.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/guardar3.png"))); // NOI18N
         jMenuItem12.setText("Guardar");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -692,7 +694,8 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu1.add(jMenuItem12);
 
-        jMenuItem2.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, 0));
+        jMenuItem2.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/salir3.png"))); // NOI18N
         jMenuItem2.setText("Salir");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -705,19 +708,19 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenuBar1.add(jMenu1);
 
         jMenu3.setText("Editar");
-        jMenu3.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenu3.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
 
-        jMenuItem7.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem7.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/copiar3.png"))); // NOI18N
         jMenuItem7.setText("Copiar");
         jMenu3.add(jMenuItem7);
 
-        jMenuItem8.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem8.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/tijeras3.png"))); // NOI18N
         jMenuItem8.setText("Cortar");
         jMenu3.add(jMenuItem8);
 
-        jMenuItem9.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem9.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/pegar3.png"))); // NOI18N
         jMenuItem9.setText("Pegar");
         jMenu3.add(jMenuItem9);
@@ -725,9 +728,9 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText("Ejecutar");
-        jMenu4.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenu4.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
 
-        jMenuItem10.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem10.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/analizar3.png"))); // NOI18N
         jMenuItem10.setText("Analizar");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -737,16 +740,22 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu4.add(jMenuItem10);
 
-        jMenuItem11.setFont(new java.awt.Font("Lucida Grande", 0, 16)); // NOI18N
+        jMenuItem11.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/caja3.png"))); // NOI18N
         jMenuItem11.setText("Compilar");
+        jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem11ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem11);
 
         jMenuBar1.add(jMenu4);
 
         jMenu5.setText("Temas");
-        jMenu5.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 15)); // NOI18N
+        jMenu5.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
 
+        jMenuItem19.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem19.setText("Fuente");
         jMenuItem19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -755,6 +764,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu5.add(jMenuItem19);
 
+        jMenuItem15.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem15.setText("Deafault");
         jMenuItem15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -763,6 +773,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu5.add(jMenuItem15);
 
+        jMenuItem16.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem16.setText("Rojo");
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -771,6 +782,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu5.add(jMenuItem16);
 
+        jMenuItem17.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem17.setText("Naranja");
         jMenuItem17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -779,6 +791,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu5.add(jMenuItem17);
 
+        jMenuItem18.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem18.setText("Verde");
         jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -790,9 +803,9 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         jMenuBar1.add(jMenu5);
 
         jMenu2.setText("Información");
-        jMenu2.setFont(new java.awt.Font("Lucida Sans", 0, 16)); // NOI18N
+        jMenu2.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
 
-        jMenuItem13.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem13.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/inter.png"))); // NOI18N
         jMenuItem13.setText("Codigo intermedio");
         jMenuItem13.addActionListener(new java.awt.event.ActionListener() {
@@ -802,7 +815,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu2.add(jMenuItem13);
 
-        jMenuItem14.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem14.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/opti.png"))); // NOI18N
         jMenuItem14.setText("Optimización");
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
@@ -812,7 +825,7 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
         });
         jMenu2.add(jMenuItem14);
 
-        jMenuItem4.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 16)); // NOI18N
+        jMenuItem4.setFont(new java.awt.Font("Lucida Sans Unicode", 0, 14)); // NOI18N
         jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/edu/ittepic/automatas/informacion3.png"))); // NOI18N
         jMenuItem4.setText("Sobre el programa");
         jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
@@ -946,36 +959,20 @@ static ArrayList<String> recorridoAutomata= new ArrayList<>(), recorridoGramatic
             {
                 String fileName = showInputDialog("Nombre del archivo");
                 
-                   fw= new FileWriter(fileName+".abys");
+                  
+                   if(fileName!=null){
+                        fw= new FileWriter(fileName+".abys");
+                        fw.write(textPane.getText());
+                        showMessageDialog(null,"Fichero guardado");
+                        fw.close();
+                    }
             }
             catch(IOException io)
             {
                   javax.swing.JOptionPane.showMessageDialog(null, "Error en crear el archivo");
             }
  
-            //Escribimos
-            try
-            {
-                
-                  fw.write(textPane.getText());
-                  showMessageDialog(null,"Fichero guardado");
-            }
- 
-            catch(IOException io)
-            {
-                  showMessageDialog(null, "Error en la escrito del archivo.");
-            }
- 
-            //cerramos el fichero
-            try
-            {
-                  fw.close();
-            }
- 
-            catch(IOException io)
-            {
-                  showMessageDialog(null, "Error al cerrar el archivo");
-            }             
+           
       }
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
 
@@ -1218,8 +1215,58 @@ int returnVal = fileChooser.showOpenDialog(this);
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
            JFontChooser fc = new JFontChooser();
         JOptionPane.showMessageDialog(this, fc, "Seleccione el tipo de fuente", JOptionPane.PLAIN_MESSAGE);
-        txtPane.setFont(fc.getPreviewFont());        // TODO add your handling code here:
+        textPane.setFont(fc.getPreviewFont());        // TODO add your handling code here:
+        
+        
     }//GEN-LAST:event_jMenuItem19ActionPerformed
+
+    private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
+               txtPane.setText("");
+       if (manejadorErrores.isEmpty() && codigointer!="" && codigointer!=null) {
+            
+            String x= "<!DOCTYPE html>"
+                    + "<html>"
+                    + "<head>"
+                    + "<title>Index</title>"
+                    + "<script src='https://code.jquery.com/jquery-3.2.1.slim.min.js' integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN' crossorigin='anonymous'></script><script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js' integrity='sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css' integrity='sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb' crossorigin='anonymous'>"
+                    + "<script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js' integrity='sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ' crossorigin='anonymous'></script>"
+                    + "<link rel='stylesheet' type='text/css' href='css/index.css'>"
+                    + "<script type='text/javascript' src='js/index.js'></script>"
+                    + "</head>"
+                    + "<body>"
+                    +codigointer
+                    + "</body>"
+                    + "</html>";
+            String x2 = "$(document).ready(function () {"+codigointerJs+"});";
+            String x3 = codigointerCss;
+            
+            Path currentRelativePath = Paths.get("");
+            String locacion=currentRelativePath.toAbsolutePath().toString()+ File.separator+"EjemploPagina";
+            File directorio1 = new File(locacion+File.separator);
+            directorio1.mkdirs();
+            File directorio = new File(locacion+File.separator+"css");
+            File directorio2 = new File(locacion+File.separator+"js");
+            directorio.mkdirs();
+            directorio2.mkdirs();
+            guardar(x2,locacion+File.separator+"js"+File.separator+"index.js");
+            guardar(x3,locacion+File.separator+"css"+File.separator+"index.css");
+            guardar(x,locacion+File.separator+"index.html");
+            txtPane.setText("");
+            appendToPane(txtPane, "¡Se construyó el proyecto con exito!", Color.BLUE);
+            try {
+                Desktop desktop = null;
+                if (Desktop.isDesktopSupported()) {
+                  desktop = Desktop.getDesktop();
+                  desktop.open(new File(locacion+File.separator+"index.html"));
+                }
+              } catch (IOException ioe) {
+                ioe.printStackTrace();
+              }
+        }else{
+            appendToPane(txtPane, "No se puede construir porque el codigo no se ha compilado", Color.RED);
+        }
+    }//GEN-LAST:event_jMenuItem11ActionPerformed
 public void fondos(JLabel label,String ruta){
         ImageIcon imagen= new ImageIcon(getClass().getResource(ruta));
         Icon icono= new ImageIcon(imagen.getImage().

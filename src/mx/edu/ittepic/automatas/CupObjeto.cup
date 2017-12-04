@@ -530,9 +530,9 @@ NUMID::= ID:e {:expFor2=e.toString();:}| NUMERO:e {:expFor2=e.toString();:}
 asignarVariable ::= VAR ID:e ASIGNACION NUMIDSTR PUNTOCOMA
                     {:
                         if(v5.equals("true")){
-                            finFun=finFun+"VAR "+e.toString()+" ="+v3+";\n";
+                            finFun=finFun+"var "+e.toString()+" ="+v3+";\n";
                         }else{
-                            finJs=finJs+"VAR "+e.toString()+" ="+v3+";\n";
+                            finJs=finJs+"var "+e.toString()+" ="+v3+";\n";
                         }
 
                     :}

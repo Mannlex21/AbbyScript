@@ -16,7 +16,7 @@ TABLE("",[""],[""],["",""])
 LIST("",["","",""...])
 --Clases--
 .setHTML("name","FORM")
-.ChildText("Texto de parrafo") 
+.ChildText("Texto de parrafo")
 .Child("#idHijo")
 .RChild("")
 .beforeChild("")
@@ -24,5 +24,5 @@ LIST("",["","",""...])
 .RClass
 .AClass
 .optSelect("","")
-.Remove("")
+.Remove()
 .inHTML()
